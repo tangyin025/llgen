@@ -1,5 +1,5 @@
 
-#include "generator.h"
+#include "llgenerator.h"
 
 int main(int argc, int argv)
 {
