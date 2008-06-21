@@ -14,16 +14,16 @@ typedef ll::AstNodePtr node_t;
 #define IDENTIFIER 259
 #define CHARACTER 260
 
-bool cpp_parser_translate_unit(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_token_seq(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_identifier_seq(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_production_seq(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_production_rhs(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_symbol_seq(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & node);
-bool cpp_parser_symbol(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_translate_unit(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_token_seq(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_identifier_seq(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_production_seq(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_production_rhs(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_symbol_seq(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & node);
+bool ll_parser_symbol(const token_t * tokens, int & token_i, node_t & node);
 
 #endif // __PARSER_H__

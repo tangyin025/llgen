@@ -287,15 +287,27 @@ namespace ll
 		}
 	}
 
-	void convert_ast_tree_to_ll_grammar(Grammar & grammar, const AstNodePtr astRoot)
+	bool convert_ast_tree_to_ll_grammar(Grammar & grammar, const AstNodePtr astRoot, std::ostream & error_report_ostr)
 	{
-		assert("root" == astRoot->getText());
+		if("root" != astRoot->getText())
+		{
+			error_report_ostr << "cannot find root node" << std::endl;
+			return false;
+		}
 
-		assert(2 == astRoot->m_childs.size());
+		if(2 != astRoot->m_childs.size())
+		{
+			error_report_ostr << "ast root node must has 2 sub node" << std::endl;
+			return false;
+		}
 
 		AstNodePtr astTokens = astRoot->m_childs[0];
 
-		assert("tokens" == astTokens->getText());
+		if("tokens" != astTokens->getText())
+		{
+			error_report_ostr << "cannot find tokens node" << std::endl;
+			return false;
+		}
 
 		AstNodePtrList::const_iterator ast_node_iter = astTokens->m_childs.begin();
 		for(; ast_node_iter != astTokens->m_childs.end(); ast_node_iter++)
@@ -305,7 +317,11 @@ namespace ll
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
 
-		assert("productions" == astProductions->getText());
+		if("productions" != astProductions->getText())
+		{
+			error_report_ostr << "cannot find productions node" << std::endl;
+			return false;
+		}
 
 		ast_node_iter = astProductions->m_childs.begin();
 		for(; ast_node_iter != astProductions->m_childs.end(); ast_node_iter++)
@@ -315,10 +331,20 @@ namespace ll
 				grammar.productionMap.insert(ProductionNode((*ast_node_iter)->getText(), SymbolMap()));
 			}
 
+			if((*ast_node_iter)->m_childs.empty())
+			{
+				error_report_ostr << "unsupport empty production" << std::endl;
+				return false;
+			}
+
 			AstNodePtrList::const_iterator ast_symbols_iter = (*ast_node_iter)->m_childs.begin();
 			for(; ast_symbols_iter != (*ast_node_iter)->m_childs.end(); ast_symbols_iter++)
 			{
-				assert("symbols" == (*ast_symbols_iter)->getText());
+				if("symbols" != (*ast_symbols_iter)->getText())
+				{
+					error_report_ostr << "cannot find symbols node" << std::endl;
+					return false;
+				}
 
 				if(!(*ast_symbols_iter)->m_childs.empty())
 				{
@@ -331,5 +357,294 @@ namespace ll
 				}
 			}
 		}
+		return true;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// insert_selection_branch
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	static void remove_from_set(StringSet & set, StringSet::const_iterator other_set_iter_begin, StringSet::const_iterator other_set_iter_end)
+	{
+		StringSet::const_iterator other_set_iter = other_set_iter_begin;
+		for(; other_set_iter != other_set_iter_end; other_set_iter++)
+		{
+			assert(set.end() != set.find(*other_set_iter));
+
+			set.erase(*other_set_iter);
+		}
+	}
+
+	void insert_selection_branch(SelectionBranchList & selectionBranchList, const StringSet & selectionSet, const SymbolNode & symbolNode)
+	{
+		StringSet remainSet(selectionSet);
+
+		SelectionBranchList::iterator branch_iter = selectionBranchList.begin();
+		for(; branch_iter != selectionBranchList.end(); branch_iter++)
+		{
+			StringSet intersectionSet;
+			std::set_intersection(branch_iter->selectionSet.begin(), branch_iter->selectionSet.end(),
+				remainSet.begin(), remainSet.end(), std::inserter(intersectionSet, intersectionSet.begin()));
+
+			if(!intersectionSet.empty())
+			{
+				branch_iter->branches.push_back(&symbolNode);
+			}
+
+			remove_from_set(remainSet, intersectionSet.begin(), intersectionSet.end());
+		}
+
+		if(!remainSet.empty())
+		{
+			selectionBranchList.push_back(SelectionBranch());
+
+			selectionBranchList.back().selectionSet = remainSet;
+
+			selectionBranchList.back().branches.push_back(&symbolNode);
+		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_producton_func
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_symbol_node_simple(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolNode & symbolNode,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth)
+	{
+		output_indent(ostr, indent);
+		ostr << "if(" << function_prefix << "_" << symbolNode.first << "(tokens, token_i, node" << deepth << "))" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "{" << std::endl;
+
+		output_parser_symbol_node_layer(ostr, function_prefix, symbolNode.second.begin(), symbolNode.second.end(), grammar, indent + 1, deepth + 1);
+
+		output_indent(ostr, indent);
+		ostr << "}" << std::endl;
+	}
+
+	void output_parser_symbol_node_plist(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolNodePList::const_iterator psym_node_begin,
+		const SymbolNodePList::const_iterator psym_node_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth)
+	{
+		assert(psym_node_begin != psym_node_end);
+
+		SymbolNodePList::const_iterator psym_node_iter = psym_node_begin;
+		for(; psym_node_iter != psym_node_end; psym_node_iter++)
+		{
+			if(psym_node_iter != psym_node_begin)
+			{
+				ostr << std::endl;
+
+				output_indent(ostr, indent);
+				ostr << "token_i = current_i;" << std::endl;
+			}
+
+			output_parser_symbol_node_simple(ostr, function_prefix, **psym_node_iter, grammar, indent, deepth);
+		}
+
+		if(1 != std::distance(psym_node_begin, psym_node_end))
+		{
+			ostr << std::endl;
+
+			output_indent(ostr, indent);
+			ostr << "current_i = token_i;" << std::endl;
+
+			output_indent(ostr, indent);
+			ostr << "return true;" << std::endl;
+		}
+	}
+
+	void output_parser_symbol_node_case(
+		std::ostream & ostr,
+		const StringSet::const_iterator selection_set_begin,
+		const StringSet::const_iterator selection_set_end,
+		const int indent)
+	{
+		StringSet::const_iterator selection_set_iter = selection_set_begin;
+		for(; selection_set_iter != selection_set_end; selection_set_iter++)
+		{
+			output_indent(ostr, indent);
+			ostr << "case " << *selection_set_iter << ":" << std::endl;
+		}
+	}
+
+	void output_parser_symbol_node_switch(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth)
+	{
+		output_indent(ostr, indent);
+		ostr << "switch(tokens[token_i])" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "{" << std::endl;
+
+		SelectionBranchList::const_iterator selection_branch_iter = selection_branch_begin;
+		for(; selection_branch_iter != selection_branch_end; selection_branch_iter++)
+		{
+			if(selection_branch_iter != selection_branch_begin)
+			{
+				ostr << std::endl;
+			}
+
+			output_parser_symbol_node_case(
+				ostr, selection_branch_iter->selectionSet.begin(), selection_branch_iter->selectionSet.end(), indent);
+
+			output_parser_symbol_node_plist(
+				ostr, function_prefix, selection_branch_iter->branches.begin(), selection_branch_iter->branches.end(), grammar, indent + 1, deepth);
+
+			output_indent(ostr, indent + 1);
+			ostr << "break;" << std::endl;
+		}
+
+		output_indent(ostr, indent);
+		ostr << "}" << std::endl;
+	}
+
+	bool find_empty_branch(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end)
+	{
+		SelectionBranchList::const_iterator selection_branch_iter = selection_branch_begin;
+		for(; selection_branch_iter != selection_branch_end; selection_branch_iter++)
+		{
+			if(selection_branch_iter->selectionSet.end() != selection_branch_iter->selectionSet.find(T_EMPTY))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	bool find_multi_branch(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end)
+	{
+		SelectionBranchList::const_iterator selection_branch_iter = selection_branch_begin;
+		for(; selection_branch_iter != selection_branch_end; selection_branch_iter++)
+		{
+			if(selection_branch_iter->branches.size() > 1)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	void output_parser_symbol_node_layer(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolMap::const_iterator sym_node_begin,
+		const SymbolMap::const_iterator sym_node_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth /*= 1*/)
+	{
+		if(sym_node_begin == sym_node_end)
+		{
+			output_indent(ostr, indent);
+			ostr << "return true;" << std::endl;
+			return;
+		}
+
+		output_indent(ostr, indent);
+		ostr << "node_t node" << deepth << ";" << std::endl;
+
+		if(1 == std::distance(sym_node_begin, sym_node_end))
+		{
+			output_parser_symbol_node_simple(ostr, function_prefix, *sym_node_begin, grammar, indent, deepth);
+
+			if(1 == deepth)
+			{
+				output_indent(ostr, indent);
+				ostr << "return false;" << std::endl;
+			}
+			return;
+		}
+
+		SelectionBranchList selectionBranchList;
+		SymbolMap::const_iterator sym_node_iter = sym_node_begin;
+		for(; sym_node_iter != sym_node_end; sym_node_iter++)
+		{
+			StringSet selectionSet;
+			insert_selection_set(selectionSet, *sym_node_iter, grammar);
+			insert_selection_branch(selectionBranchList, selectionSet, *sym_node_iter);
+		}
+
+		if(find_empty_branch(selectionBranchList.begin(), selectionBranchList.end()))
+		{
+			output_indent(ostr, indent);
+			ostr << "int current_i = token_i;" << std::endl;
+
+			output_parser_symbol_node_switch(
+				ostr, function_prefix, selectionBranchList.begin(), selectionBranchList.end(), grammar, indent, deepth);
+
+			ostr << std::endl;
+
+			output_indent(ostr, indent);
+			ostr << "token_i = current_i;" << std::endl;
+
+			output_indent(ostr, indent);
+			ostr << "return true;" << std::endl;
+		}
+		else if(find_multi_branch(selectionBranchList.begin(), selectionBranchList.end()))
+		{
+			output_indent(ostr, indent);
+			ostr << "int current_i = token_i" << std::endl;
+
+			output_parser_symbol_node_switch(
+				ostr, function_prefix, selectionBranchList.begin(), selectionBranchList.end(), grammar, indent, deepth);
+
+			if(1 == deepth)
+			{
+				output_indent(ostr, indent);
+				ostr << "return false;" << std::endl;
+			}
+		}
+		else
+		{
+			output_parser_symbol_node_switch(
+				ostr, function_prefix, selectionBranchList.begin(), selectionBranchList.end(), grammar, indent, deepth);
+
+			if(1 == deepth)
+			{
+				output_indent(ostr, indent);
+				ostr << "return false;" << std::endl;
+			}
+		}
+	}
+
+	void output_parser_producton_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const ProductionNode & production,
+		const Grammar & grammar,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "bool " << function_prefix << "_" << production.first << "(token_t * tokens, int token_i, node_t & node)" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "{" << std::endl;
+
+		output_parser_symbol_node_layer(ostr, function_prefix, production.second.begin(), production.second.end(), grammar, indent + 1);
+
+		output_indent(ostr, indent);
+		ostr << "}" << std::endl;
 	}
 }

@@ -210,7 +210,89 @@ namespace ll
 	// convert_ast_tree_to_ll_grammar
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	void convert_ast_tree_to_ll_grammar(Grammar & grammar, AstNodePtr astRoot);
+	bool convert_ast_tree_to_ll_grammar(Grammar & grammar, const AstNodePtr astRoot, std::ostream & error_report_ostr);
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// SelectionBranch
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	typedef std::vector<const SymbolNode *> SymbolNodePList;
+
+	class SelectionBranch
+	{
+	public:
+		StringSet selectionSet;
+
+		SymbolNodePList branches;
+	};
+
+	typedef std::vector<SelectionBranch> SelectionBranchList;
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// insert_selection_branch
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void insert_selection_branch(SelectionBranchList & selectionBranchList, const StringSet & selectionSet, const SymbolNode & symbolNode);
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_producton_func
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_symbol_node_simple(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolNode & symbolNode,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth);
+
+	void output_parser_symbol_node_plist(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolNodePList::const_iterator psym_node_begin,
+		const SymbolNodePList::const_iterator psym_node_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth);
+
+	void output_parser_symbol_node_case(
+		std::ostream & ostr,
+		const StringSet::const_iterator selection_set_begin,
+		const StringSet::const_iterator selection_set_end,
+		const int indent);
+
+	void output_parser_symbol_node_switch(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth);
+
+	bool find_empty_branch(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end);
+
+	bool find_multi_branch(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end);
+
+	void output_parser_symbol_node_layer(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const SymbolMap::const_iterator sym_node_begin,
+		const SymbolMap::const_iterator sym_node_end,
+		const Grammar & grammar,
+		const int indent,
+		const int deepth = 1);
+
+	void output_parser_producton_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const ProductionNode & production,
+		const Grammar & grammar,
+		const int indent = 0);
 }
 
 #endif // __LLGENERATOR_H__

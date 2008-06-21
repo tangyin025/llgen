@@ -5,7 +5,7 @@
 #include "parser.h"
 
 template <int token>
-bool cpp_parser_shift_token(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_shift_token(const token_t * tokens, int & token_i, node_t & node)
 {
     if(token == tokens[token_i].getType())
     {
@@ -23,19 +23,19 @@ bool cpp_parser_shift_token(const token_t * tokens, int & token_i, node_t & node
  *        token_seq_opt PERCENTPERCENT production_seq_opt PERCENTPERCENT 
  *******************************************************************************/
 
-bool cpp_parser_translate_unit(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_translate_unit(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_token_seq_opt(tokens, token_i, node1))
+    if(ll_parser_token_seq_opt(tokens, token_i, node1))
     {
 		node_t node2;
-        if(cpp_parser_shift_token<PERCENTPERCENT>(tokens, token_i, node2))
+        if(ll_parser_shift_token<PERCENTPERCENT>(tokens, token_i, node2))
         {
 			node_t node3;
-            if(cpp_parser_production_seq_opt(tokens, token_i, node3))
+            if(ll_parser_production_seq_opt(tokens, token_i, node3))
             {
 				node_t node4;
-                if(cpp_parser_shift_token<PERCENTPERCENT>(tokens, token_i, node4))
+                if(ll_parser_shift_token<PERCENTPERCENT>(tokens, token_i, node4))
                 {
 					assert("tokens" == node1->getText());
 					assert("productions" == node3->getText());
@@ -55,16 +55,16 @@ bool cpp_parser_translate_unit(const token_t * tokens, int & token_i, node_t & n
  *        PERCENTTOKEN identifier_seq token_seq_opt 
  *******************************************************************************/
 
-bool cpp_parser_token_seq(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_token_seq(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_shift_token<PERCENTTOKEN>(tokens, token_i, node1))
+    if(ll_parser_shift_token<PERCENTTOKEN>(tokens, token_i, node1))
     {
 		node_t node2;
-        if(cpp_parser_identifier_seq(tokens, token_i, node2))
+        if(ll_parser_identifier_seq(tokens, token_i, node2))
         {
 			node_t node3;
-            if(cpp_parser_token_seq_opt(tokens, token_i, node3))
+            if(ll_parser_token_seq_opt(tokens, token_i, node3))
             {
 				assert("identifiers" == node2->getText());
 				assert("tokens" == node3->getText());
@@ -84,7 +84,7 @@ bool cpp_parser_token_seq(const token_t * tokens, int & token_i, node_t & node)
  *        | token_seq 
  *******************************************************************************/
 
-bool cpp_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & node)
 {
 	int current_i = token_i;
 	node_t node1;
@@ -92,7 +92,7 @@ bool cpp_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & no
     {
     case PERCENTTOKEN:
         {
-            if(cpp_parser_token_seq(tokens, token_i, node1))
+            if(ll_parser_token_seq(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
@@ -114,13 +114,13 @@ bool cpp_parser_token_seq_opt(const token_t * tokens, int & token_i, node_t & no
  *        IDENTIFIER identifier_seq_opt 
  *******************************************************************************/
 
-bool cpp_parser_identifier_seq(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_identifier_seq(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
+    if(ll_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
     {
 		node_t node2;
-        if(cpp_parser_identifier_seq_opt(tokens, token_i, node2))
+        if(ll_parser_identifier_seq_opt(tokens, token_i, node2))
         {
 			assert("identifiers" == node2->getText());
 			node = ll::AstNodePtr(new ll::AstNode("identifiers"));
@@ -138,7 +138,7 @@ bool cpp_parser_identifier_seq(const token_t * tokens, int & token_i, node_t & n
  *        | identifier_seq 
  *******************************************************************************/
 
-bool cpp_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t & node)
 {
 	int current_i = token_i;
 	node_t node1;
@@ -146,7 +146,7 @@ bool cpp_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t
     {
     case IDENTIFIER:
         {
-            if(cpp_parser_identifier_seq(tokens, token_i, node1))
+            if(ll_parser_identifier_seq(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
@@ -168,19 +168,19 @@ bool cpp_parser_identifier_seq_opt(const token_t * tokens, int & token_i, node_t
  *        IDENTIFIER ':' production_rhs production_seq_opt 
  *******************************************************************************/
 
-bool cpp_parser_production_seq(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_production_seq(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
+    if(ll_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
     {
 		node_t node2;
-        if(cpp_parser_shift_token<':'>(tokens, token_i, node2))
+        if(ll_parser_shift_token<':'>(tokens, token_i, node2))
         {
 			node_t node3;
-            if(cpp_parser_production_rhs(tokens, token_i, node3))
+            if(ll_parser_production_rhs(tokens, token_i, node3))
             {
 				node_t node4;
-                if(cpp_parser_production_seq_opt(tokens, token_i, node4))
+                if(ll_parser_production_seq_opt(tokens, token_i, node4))
                 {
 					assert("rhs" == node3->getText());
 					assert("productions" == node4->getText());
@@ -202,7 +202,7 @@ bool cpp_parser_production_seq(const token_t * tokens, int & token_i, node_t & n
  *        | production_seq 
  *******************************************************************************/
 
-bool cpp_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t & node)
 {
 	int current_i = token_i;
 	node_t node1;
@@ -210,7 +210,7 @@ bool cpp_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t
     {
     case IDENTIFIER:
         {
-            if(cpp_parser_production_seq(tokens, token_i, node1))
+            if(ll_parser_production_seq(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
@@ -233,17 +233,17 @@ bool cpp_parser_production_seq_opt(const token_t * tokens, int & token_i, node_t
  *        | symbol_seq_opt ';' 
  *******************************************************************************/
 
-bool cpp_parser_production_rhs(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_production_rhs(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_symbol_seq_opt(tokens, token_i, node1))
+    if(ll_parser_symbol_seq_opt(tokens, token_i, node1))
     {
 		node_t node2;
         switch(tokens[token_i].getType())
         {
         case ';':
             {
-                if(cpp_parser_shift_token<';'>(tokens, token_i, node2))
+                if(ll_parser_shift_token<';'>(tokens, token_i, node2))
                 {
 					assert("symbols" == node1->getText());
 					node = ll::AstNodePtr(new ll::AstNode("rhs"));
@@ -255,10 +255,10 @@ bool cpp_parser_production_rhs(const token_t * tokens, int & token_i, node_t & n
 
         case '|':
             {
-                if(cpp_parser_shift_token<'|'>(tokens, token_i, node2))
+                if(ll_parser_shift_token<'|'>(tokens, token_i, node2))
                 {
 					node_t node3;
-                    if(cpp_parser_production_rhs(tokens, token_i, node3))
+                    if(ll_parser_production_rhs(tokens, token_i, node3))
                     {
 						assert("symbols" == node1->getText());
 						assert("rhs" == node3->getText());
@@ -284,13 +284,13 @@ bool cpp_parser_production_rhs(const token_t * tokens, int & token_i, node_t & n
  *        symbol symbol_seq_opt 
  *******************************************************************************/
 
-bool cpp_parser_symbol_seq(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_symbol_seq(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
-    if(cpp_parser_symbol(tokens, token_i, node1))
+    if(ll_parser_symbol(tokens, token_i, node1))
     {
 		node_t node2;
-        if(cpp_parser_symbol_seq_opt(tokens, token_i, node2))
+        if(ll_parser_symbol_seq_opt(tokens, token_i, node2))
         {
 			assert("symbols" == node2->getText());
 			node = ll::AstNodePtr(new ll::AstNode("symbols"));
@@ -308,7 +308,7 @@ bool cpp_parser_symbol_seq(const token_t * tokens, int & token_i, node_t & node)
  *        | symbol_seq 
  *******************************************************************************/
 
-bool cpp_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & node)
 {
 	int current_i = token_i;
 	node_t node1;
@@ -317,7 +317,7 @@ bool cpp_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & n
     case CHARACTER:
     case IDENTIFIER:
         {
-            if(cpp_parser_symbol_seq(tokens, token_i, node1))
+            if(ll_parser_symbol_seq(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
@@ -340,14 +340,14 @@ bool cpp_parser_symbol_seq_opt(const token_t * tokens, int & token_i, node_t & n
  *        | CHARACTER 
  *******************************************************************************/
 
-bool cpp_parser_symbol(const token_t * tokens, int & token_i, node_t & node)
+bool ll_parser_symbol(const token_t * tokens, int & token_i, node_t & node)
 {
 	node_t node1;
     switch(tokens[token_i].getType())
     {
     case CHARACTER:
         {
-            if(cpp_parser_shift_token<CHARACTER>(tokens, token_i, node1))
+            if(ll_parser_shift_token<CHARACTER>(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
@@ -357,7 +357,7 @@ bool cpp_parser_symbol(const token_t * tokens, int & token_i, node_t & node)
 
     case IDENTIFIER:
         {
-            if(cpp_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
+            if(ll_parser_shift_token<IDENTIFIER>(tokens, token_i, node1))
             {
 				node = node1;
                 return true;
