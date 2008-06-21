@@ -119,10 +119,28 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\lexer.cpp">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						WarningLevel="0"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						WarningLevel="0"/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath=".\llgenerator.cpp">
 			</File>
 			<File
 				RelativePath=".\main.cpp">
+			</File>
+			<File
+				RelativePath=".\parser.cpp">
 			</File>
 		</Filter>
 		<Filter
@@ -131,6 +149,9 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
 				RelativePath=".\llgenerator.h">
+			</File>
+			<File
+				RelativePath=".\parser.h">
 			</File>
 		</Filter>
 		<Filter
