@@ -127,18 +127,13 @@ namespace ll
 		return boost::regex_match(symbol, s_reg_CHAR);
 	}
 
-	static bool is_empty_symbol(const std::string & symbol)
-	{
-		return T_EMPTY == symbol;
-	}
-
 	static StringSet securityStack;
 
 	static void insert_selection_set_inside(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
 	{
 		if(grammar.tokenSet.end() != grammar.tokenSet.find(symbolNode.first)
 			|| is_character_symbol(symbolNode.first)
-			|| is_empty_symbol(symbolNode.first))
+			|| T_EMPTY == symbolNode.first)
 		{
 			selectionSet.insert(symbolNode.first);
 			return;
@@ -215,7 +210,7 @@ namespace ll
 	{
 		if(grammar.tokenSet.end() != grammar.tokenSet.find(symbol)
 			|| is_character_symbol(symbol)
-			|| is_empty_symbol(symbol))
+			|| T_EMPTY == symbol)
 		{
 			return false;
 		}
@@ -416,8 +411,22 @@ namespace ll
 		const int indent,
 		const int deepth)
 	{
-		output_indent(ostr, indent);
-		ostr << "if(" << function_prefix << "_" << symbolNode.first << "(tokens, token_i, node" << deepth << "))" << std::endl;
+		if(T_EMPTY == symbolNode.first)
+		{
+			output_indent(ostr, indent);
+			ostr << "if(" << function_prefix << "_shift_EMPTY(tokens, token_i, node" << deepth << "))" << std::endl;
+		}		
+		else if(grammar.tokenSet.end() != grammar.tokenSet.find(symbolNode.first)
+			|| is_character_symbol(symbolNode.first))
+		{
+			output_indent(ostr, indent);
+			ostr << "if(" << function_prefix << "_shift_token<" << symbolNode.first << ">(tokens, token_i, node" << deepth << "))" << std::endl;
+		}
+		else
+		{
+			output_indent(ostr, indent);
+			ostr << "if(" << function_prefix << "_" << symbolNode.first << "(tokens, token_i, node" << deepth << "))" << std::endl;
+		}
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -452,17 +461,6 @@ namespace ll
 
 			output_parser_symbol_node_simple(ostr, function_prefix, **psym_node_iter, grammar, indent, deepth);
 		}
-
-		if(1 != std::distance(psym_node_begin, psym_node_end))
-		{
-			ostr << std::endl;
-
-			output_indent(ostr, indent);
-			ostr << "current_i = token_i;" << std::endl;
-
-			output_indent(ostr, indent);
-			ostr << "return true;" << std::endl;
-		}
 	}
 
 	void output_parser_symbol_node_case(
@@ -474,8 +472,16 @@ namespace ll
 		StringSet::const_iterator selection_set_iter = selection_set_begin;
 		for(; selection_set_iter != selection_set_end; selection_set_iter++)
 		{
-			output_indent(ostr, indent);
-			ostr << "case " << *selection_set_iter << ":" << std::endl;
+			if(T_EMPTY == *selection_set_iter)
+			{
+				output_indent(ostr, indent);
+				ostr << "default:" << std::endl;
+			}
+			else
+			{
+				output_indent(ostr, indent);
+				ostr << "case " << *selection_set_iter << ":" << std::endl;
+			}
 		}
 	}
 
@@ -514,21 +520,6 @@ namespace ll
 
 		output_indent(ostr, indent);
 		ostr << "}" << std::endl;
-	}
-
-	bool find_empty_branch(
-		const SelectionBranchList::const_iterator selection_branch_begin,
-		const SelectionBranchList::const_iterator selection_branch_end)
-	{
-		SelectionBranchList::const_iterator selection_branch_iter = selection_branch_begin;
-		for(; selection_branch_iter != selection_branch_end; selection_branch_iter++)
-		{
-			if(selection_branch_iter->selectionSet.end() != selection_branch_iter->selectionSet.find(T_EMPTY))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 
 	bool find_multi_branch(
@@ -586,26 +577,10 @@ namespace ll
 			insert_selection_branch(selectionBranchList, selectionSet, *sym_node_iter);
 		}
 
-		if(find_empty_branch(selectionBranchList.begin(), selectionBranchList.end()))
+		if(find_multi_branch(selectionBranchList.begin(), selectionBranchList.end()))
 		{
 			output_indent(ostr, indent);
 			ostr << "int current_i = token_i;" << std::endl;
-
-			output_parser_symbol_node_switch(
-				ostr, function_prefix, selectionBranchList.begin(), selectionBranchList.end(), grammar, indent, deepth);
-
-			ostr << std::endl;
-
-			output_indent(ostr, indent);
-			ostr << "token_i = current_i;" << std::endl;
-
-			output_indent(ostr, indent);
-			ostr << "return true;" << std::endl;
-		}
-		else if(find_multi_branch(selectionBranchList.begin(), selectionBranchList.end()))
-		{
-			output_indent(ostr, indent);
-			ostr << "int current_i = token_i" << std::endl;
 
 			output_parser_symbol_node_switch(
 				ostr, function_prefix, selectionBranchList.begin(), selectionBranchList.end(), grammar, indent, deepth);
@@ -646,5 +621,35 @@ namespace ll
 
 		output_indent(ostr, indent);
 		ostr << "}" << std::endl;
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_cpp_source
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_cpp_source(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const AstNodePtr astRoot,
+		const Grammar & grammar)
+	{
+		assert(2 == astRoot->m_childs.size());
+
+		AstNodePtr astProductions = astRoot->m_childs[1];
+
+		assert("productions" == astProductions->getText());
+
+		AstNodePtrList::const_iterator ast_production_iter = astProductions->m_childs.begin();
+		for(; ast_production_iter != astProductions->m_childs.end(); ast_production_iter++)
+		{
+			assert(grammar.productionMap.end() != grammar.productionMap.find((*ast_production_iter)->getText()));
+
+			if(ast_production_iter != astProductions->m_childs.begin())
+			{
+				ostr << std::endl;
+			}
+
+			output_parser_producton_func(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
+		}
 	}
 }

@@ -94,17 +94,7 @@ int main(int argc, char ** argv)
 		}
 
 		// output parser function
-		assert(2 == ast_root->m_childs.size());
-		ll::AstNodePtr ast_production_root = ast_root->m_childs[1];
-		assert("productions" == ast_production_root->getText());
-		ll::AstNodePtrList::const_iterator ast_production_iter = ast_production_root->m_childs.begin();
-		for(; ast_production_iter != ast_production_root->m_childs.end(); ast_production_iter++)
-		{
-			assert(grammar.productionMap.end() != grammar.productionMap.find((*ast_production_iter)->getText()));
-
-			ofstr << std::endl;
-			ll::output_parser_producton_func(ofstr, "ll_parser", *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
-		}
+		ll::output_parser_cpp_source(ofstr, "ll_parser", ast_root, grammar);
 	}
 
 	return 0;

@@ -270,10 +270,6 @@ namespace ll
 		const int indent,
 		const int deepth);
 
-	bool find_empty_branch(
-		const SelectionBranchList::const_iterator selection_branch_begin,
-		const SelectionBranchList::const_iterator selection_branch_end);
-
 	bool find_multi_branch(
 		const SelectionBranchList::const_iterator selection_branch_begin,
 		const SelectionBranchList::const_iterator selection_branch_end);
@@ -293,6 +289,16 @@ namespace ll
 		const ProductionNode & production,
 		const Grammar & grammar,
 		const int indent = 0);
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_cpp_source
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_cpp_source(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const AstNodePtr astRoot,
+		const Grammar & grammar);
 }
 
 #endif // __LLGENERATOR_H__
