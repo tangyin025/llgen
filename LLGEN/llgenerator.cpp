@@ -400,7 +400,7 @@ namespace ll
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// output_parser_producton_func
+	// output_parser_production_func
 	// //////////////////////////////////////////////////////////////////////////////////
 
 	void output_parser_symbol_node_simple(
@@ -604,7 +604,7 @@ namespace ll
 		}
 	}
 
-	void output_parser_producton_func(
+	void output_parser_production_func(
 		std::ostream & ostr,
 		const std::string & function_prefix,
 		const ProductionNode & production,
@@ -627,12 +627,61 @@ namespace ll
 	// output_parser_cpp_source
 	// //////////////////////////////////////////////////////////////////////////////////
 
+	void output_parser_shift_EMPTY_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "bool " << function_prefix << "_shift_EMPTY(token_t * tokens, int token_i, node_t & node)" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "{" << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << "return true;" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "}" << std::endl;
+	}
+
+	void output_parser_shift_token_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "template <int TOKEN>" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "bool " << function_prefix << "_shift_token(token_t * tokens, int token_i, node_t & node)" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "{" << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << ";" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "}" << std::endl;
+	}
+
 	void output_parser_cpp_source(
 		std::ostream & ostr,
 		const std::string & function_prefix,
 		const AstNodePtr astRoot,
 		const Grammar & grammar)
 	{
+		ostr << std::endl;
+
+		output_parser_shift_EMPTY_func(ostr, function_prefix);
+
+		ostr << std::endl;
+
+		output_parser_shift_token_func(ostr, function_prefix);
+
+		ostr << std::endl;
+
 		assert(2 == astRoot->m_childs.size());
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
@@ -649,7 +698,86 @@ namespace ll
 				ostr << std::endl;
 			}
 
-			output_parser_producton_func(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
+			output_parser_production_func(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
 		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_cpp_header
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_cpp_header_guard_begin(
+		std::ostream & ostr,
+		const std::string & definite_header,
+		const Grammar & grammar,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "#ifndef " << definite_header << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << "#define " << definite_header << std::endl;
+
+		return;
+		grammar;
+	}
+
+	void output_parser_cpp_header_guard_end(
+		std::ostream & ostr,
+		const std::string & definite_header,
+		const Grammar & grammar,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "#endif //" << definite_header << std::endl;
+
+		return;
+		grammar;
+	}
+
+	void output_parser_production_func_definition(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const ProductionNode & production,
+		const Grammar & grammar,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "bool " << function_prefix << "_" << production.first << "(token_t * tokens, int token_i, node_t & node);" << std::endl;
+
+		return;
+		grammar;
+	}
+
+	void output_parser_cpp_header(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const std::string & definite_header,
+		const AstNodePtr astRoot,
+		const Grammar & grammar)
+	{
+		ostr << std::endl;
+
+		output_parser_cpp_header_guard_begin(ostr, definite_header, grammar);
+
+		ostr << std::endl;
+
+		assert(2 == astRoot->m_childs.size());
+
+		AstNodePtr astProductions = astRoot->m_childs[1];
+
+		assert("productions" == astProductions->getText());
+
+		AstNodePtrList::const_iterator ast_production_iter = astProductions->m_childs.begin();
+		for(; ast_production_iter != astProductions->m_childs.end(); ast_production_iter++)
+		{
+			assert(grammar.productionMap.end() != grammar.productionMap.find((*ast_production_iter)->getText()));
+
+			output_parser_production_func_definition(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
+		}
+
+		ostr << std::endl;
+
+		output_parser_cpp_header_guard_end(ostr, definite_header, grammar);
 	}
 }

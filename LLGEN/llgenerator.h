@@ -235,7 +235,7 @@ namespace ll
 	void insert_selection_branch(SelectionBranchList & selectionBranchList, const StringSet & selectionSet, const SymbolNode & symbolNode);
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// output_parser_producton_func
+	// output_parser_production_func
 	// //////////////////////////////////////////////////////////////////////////////////
 
 	void output_parser_symbol_node_simple(
@@ -283,7 +283,7 @@ namespace ll
 		const int indent,
 		const int deepth = 1);
 
-	void output_parser_producton_func(
+	void output_parser_production_func(
 		std::ostream & ostr,
 		const std::string & function_prefix,
 		const ProductionNode & production,
@@ -294,9 +294,49 @@ namespace ll
 	// output_parser_cpp_source
 	// //////////////////////////////////////////////////////////////////////////////////
 
+	void output_parser_shift_EMPTY_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const int indent = 0);
+
+	void output_parser_shift_token_func(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const int indent = 0);
+
 	void output_parser_cpp_source(
 		std::ostream & ostr,
 		const std::string & function_prefix,
+		const AstNodePtr astRoot,
+		const Grammar & grammar);
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// output_parser_cpp_header
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void output_parser_cpp_header_guard_begin(
+		std::ostream & ostr,
+		const std::string & definite_header,
+		const Grammar & grammar,
+		const int indent = 0);
+
+	void output_parser_cpp_header_guard_end(
+		std::ostream & ostr,
+		const std::string & definite_header,
+		const Grammar & grammar,
+		const int indent = 0);
+
+	void output_parser_production_func_definition(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const ProductionNode & production,
+		const Grammar & grammar,
+		const int indent = 0);
+
+	void output_parser_cpp_header(
+		std::ostream & ostr,
+		const std::string & function_prefix,
+		const std::string & definite_header,
 		const AstNodePtr astRoot,
 		const Grammar & grammar);
 }

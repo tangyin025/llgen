@@ -8,6 +8,11 @@
 #include <crtdbg.h>
 #endif
 
+#pragma warning(disable: 4512) // warning C4512: 'boost::algorithm::detail::to_upperF<CharT>' : assignment operator could not be generated
+#include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/replace.hpp>
+#pragma warning(default: 4512)
+
 extern FILE * yyin;
 
 extern int yylex(void);
@@ -63,16 +68,16 @@ int main(int argc, char ** argv)
 			exit(1);
 		}
 
-		//// check and report left-recursion
-		//ll::ProductionMap::const_iterator production_iter = grammar.productionMap.begin();
-		//for(; production_iter != grammar.productionMap.end(); production_iter++)
-		//{
-		//	ll::StringList returnPath;
-		//	if(ll::find_left_recursion(returnPath, grammar, production_iter->first))
-		//	{
-		//		ll::report_left_recursion_path(std::cout, returnPath);
-		//	}
-		//}
+		// check and report left-recursion
+		ll::ProductionMap::const_iterator production_iter = grammar.productionMap.begin();
+		for(; production_iter != grammar.productionMap.end(); production_iter++)
+		{
+			ll::StringList returnPath;
+			if(ll::find_left_recursion(returnPath, grammar, production_iter->first))
+			{
+				ll::report_left_recursion_path(std::cout, returnPath);
+			}
+		}
 
 		//// output selection set
 		//production_iter = grammar.productionMap.begin();
@@ -93,7 +98,12 @@ int main(int argc, char ** argv)
 			exit(1);
 		}
 
-		// output parser function
+		// output parser src code
+		ll::output_parser_cpp_header(ofstr, "ll_parser",
+			"__" + boost::algorithm::to_upper_copy(boost::algorithm::replace_all_copy(fname, ".", "_")) + "_H__", ast_root, grammar);
+
+		ofstr << std::endl;
+
 		ll::output_parser_cpp_source(ofstr, "ll_parser", ast_root, grammar);
 	}
 
