@@ -660,10 +660,62 @@ namespace ll
 		ostr << "{" << std::endl;
 
 		output_indent(ostr, indent + 1);
-		ostr << ";" << std::endl;
+		ostr << "if(TOKEN == tokens[token_i++])" << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << "{" << std::endl;
+
+		output_indent(ostr, indent + 2);
+		ostr << "return true;" << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << "}" << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << "return false;" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "}" << std::endl;
+	}
+
+	void output_parser_production_comment(
+		std::ostream & ostr,
+		const AstNodePtr astProduction,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "/******************************************************************************************" << std::endl;
+
+		output_indent(ostr, indent);
+		ostr << " * " << astProduction->getText() << std::endl;
+
+		AstNodePtrList::const_iterator ast_symbol_list_iter = astProduction->m_childs.begin();
+		for(; ast_symbol_list_iter != astProduction->m_childs.end(); ast_symbol_list_iter++)
+		{
+			assert("symbols" == (*ast_symbol_list_iter)->getText());
+
+			output_indent(ostr, indent);
+			ostr << " * ";
+
+			output_indent(ostr, 1);
+			if((*ast_symbol_list_iter)->m_childs.empty())
+			{
+				ostr << S_EMPTY;
+			}
+			else
+			{
+				AstNodePtrList::const_iterator ast_symbol_iter = (*ast_symbol_list_iter)->m_childs.begin();
+				for(; ast_symbol_iter != (*ast_symbol_list_iter)->m_childs.end(); ast_symbol_iter++)
+				{
+					ostr << (*ast_symbol_iter)->getText();
+					ostr << " ";
+				}
+			}
+			ostr << std::endl;
+		}
+
+		output_indent(ostr, indent);
+		ostr << " ******************************************************************************************/" << std::endl;
 	}
 
 	void output_parser_cpp_source(
@@ -697,6 +749,10 @@ namespace ll
 			{
 				ostr << std::endl;
 			}
+
+			output_parser_production_comment(ostr, *ast_production_iter);
+
+			ostr << std::endl;
 
 			output_parser_production_func(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
 		}
@@ -735,6 +791,39 @@ namespace ll
 		grammar;
 	}
 
+	void output_parser_token_definition(
+		std::ostream & ostr,
+		const std::string & token_name,
+		const size_t token_value,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "#define " << token_name << " " << token_value << std::endl;
+	}
+
+	void output_parser_token_definition_list(
+		std::ostream & ostr,
+		AstNodePtrList::const_iterator ast_token_begin,
+		AstNodePtrList::const_iterator ast_token_end,
+		const int indent /*= 0*/)
+	{
+		AstNodePtrList::const_iterator ast_token_iter = ast_token_begin;
+		for(; ast_token_iter != ast_token_end; ast_token_iter++)
+		{
+			output_parser_token_definition(ostr, (*ast_token_iter)->getText(), std::distance(ast_token_begin, ast_token_iter) + UCHAR_MAX + 1, indent);
+		}
+	}
+
+	void output_parser_typedef_definition(
+		std::ostream & ostr,
+		const std::string & old_type_name,
+		const std::string & new_type_name,
+		const int indent /*= 0*/)
+	{
+		output_indent(ostr, indent);
+		ostr << "typedef " << old_type_name << " " << new_type_name << ";" << std::endl;
+	}
+
 	void output_parser_production_func_definition(
 		std::ostream & ostr,
 		const std::string & function_prefix,
@@ -760,13 +849,29 @@ namespace ll
 
 		output_parser_cpp_header_guard_begin(ostr, definite_header, grammar);
 
+		assert(2 == astRoot->m_childs.size());
+
+		AstNodePtr astTokens = astRoot->m_childs[0];
+
+		assert("tokens" == astTokens->getText());
+
 		ostr << std::endl;
 
-		assert(2 == astRoot->m_childs.size());
+		output_parser_token_definition_list(ostr, astTokens->m_childs.begin(), astTokens->m_childs.end());
+
+		ostr << std::endl;
+
+		output_parser_typedef_definition(ostr, "int", "token_t");
+
+		ostr << std::endl;
+
+		output_parser_typedef_definition(ostr, "void *", "node_t");
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
 
 		assert("productions" == astProductions->getText());
+
+		ostr << std::endl;
 
 		AstNodePtrList::const_iterator ast_production_iter = astProductions->m_childs.begin();
 		for(; ast_production_iter != astProductions->m_childs.end(); ast_production_iter++)

@@ -304,6 +304,11 @@ namespace ll
 		const std::string & function_prefix,
 		const int indent = 0);
 
+	void output_parser_production_comment(
+		std::ostream & ostr,
+		const AstNodePtr astProduction,
+		const int indent = 0);
+
 	void output_parser_cpp_source(
 		std::ostream & ostr,
 		const std::string & function_prefix,
@@ -324,6 +329,24 @@ namespace ll
 		std::ostream & ostr,
 		const std::string & definite_header,
 		const Grammar & grammar,
+		const int indent = 0);
+
+	void output_parser_token_definition(
+		std::ostream & ostr,
+		const std::string & token_name,
+		const size_t token_value,
+		const int indent = 0);
+
+	void output_parser_token_definition_list(
+		std::ostream & ostr,
+		AstNodePtrList::const_iterator ast_token_begin,
+		AstNodePtrList::const_iterator ast_token_end,
+		const int indent = 0);
+
+	void output_parser_typedef_definition(
+		std::ostream & ostr,
+		const std::string & old_type_name,
+		const std::string & new_type_name,
 		const int indent = 0);
 
 	void output_parser_production_func_definition(
