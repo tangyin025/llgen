@@ -16,6 +16,10 @@ int lineno = 1;
 		nextcolumnno += yyleng;\
 	}
 
+void skip_comment_line(void);
+	
+void skip_comment_stream(void);
+
 %}
 
 %%
@@ -23,6 +27,10 @@ int lineno = 1;
 "\n"							{ lineno++; columnno = nextcolumnno = 1; }
 
 [\t\f\v\r ]+
+
+"//"							{ skip_comment_line(); }
+
+"/*"							{ skip_comment_stream(); }
 
 "%%"							{ return PERCENTPERCENT; }
 
@@ -47,4 +55,32 @@ int lineno = 1;
 int yywrap(void)
 {
 	return 1;
+}
+
+void skip_comment_line(void)
+{
+	char c;
+	do
+	{
+		c = yyinput();
+	}
+	while(c != EOF && c != '\n');
+	lineno++;
+}
+
+void skip_comment_stream(void)
+{
+	char c[2];
+	c[1] = 0;
+	do
+	{
+		c[0] = c[1];
+		c[1] = yyinput();
+
+		if(c[1] == '\n')
+		{
+			lineno++;
+		}
+	}
+	while(c[1] != EOF && !(c[0] == '*' && c[1] == '/'));
 }

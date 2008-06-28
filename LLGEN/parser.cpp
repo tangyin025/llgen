@@ -14,7 +14,7 @@ bool ll_parser_shift_token(const token_t * tokens, int & token_i, node_t & node)
         return true;
     }
 
-	ll::set_last_error_except_existed("syntax error, need " + ll::token_type_to_str(token), &tokens[token_i]);
+	ll::set_last_error_except_existed("syntax error, need '" + ll::token_type_to_str(token) + "'", &tokens[token_i]);
     return false;
 }
 

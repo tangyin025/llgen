@@ -857,202 +857,202 @@ type_id_list:
 	;
 
 declaration_seq_opt:
-
+	/* empty */
 	| declaration_seq
 	;
 
 TEMPLATE_opt:
-
+	/* empty */
 	| TEMPLATE
 	;
 
 nested_name_specifier_opt:
-
+	/* empty */
 	| nested_name_specifier
 	;
 
 expression_list_opt:
-
+	/* empty */
 	| expression_list
 	;
 
 COLONCOLON_opt:
-
+	/* empty */
 	| COLONCOLON
 	;
 
 new_placement_opt:
-
+	/* empty */
 	| new_placement
 	;
 
 new_initializer_opt:
-
+	/* empty */
 	| new_initializer
 	;
 
 new_declarator_opt:
-
+	/* empty */
 	| new_declarator
 	;
 
 expression_opt:
-
+	/* empty */
 	| expression
 	;
 
 statement_seq_opt:
-
+	/* empty */
 	| statement_seq
 	;
 
 condition_opt:
-
+	/* empty */
 	| condition
 	;
 
 decl_specifier_seq_opt:
-
+	/* empty */
 	| decl_specifier_seq
 	;
 
 init_declarator_list_opt:
-
+	/* empty */
 	| init_declarator_list
 	;
 
 identifier_opt:
-
+	/* empty */
 	| identifier
 	;
 
 enumerator_list_opt:
-
+	/* empty */
 	| enumerator_list
 	;
 
 TYPENAME_opt:
-
+	/* empty */
 	| TYPENAME
 	;
 
 initializer_opt:
-
+	/* empty */
 	| initializer
 	;
 
 cv_qualifier_seq_opt:
-
+	/* empty */
 	| cv_qualifier_seq
 	;
 
 exception_specification_opt:
-
+	/* empty */
 	| exception_specification
 	;
 
 constant_expression_opt:
-
+	/* empty */
 	| constant_expression
 	;
 
 abstract_declarator_opt:
-
+	/* empty */
 	| abstract_declarator
 	;
 
 type_specifier_seq_opt:
-
+	/* empty */
 	| type_specifier_seq
 	;
 
 direct_abstract_declarator_opt:
-
+	/* empty */
 	| direct_abstract_declarator
 	;
 
 parameter_declaration_list_opt:
-
+	/* empty */
 	| parameter_declaration_list
 	;
 
 ELLIPSIS_opt:
-
+	/* empty */
 	| ELLIPSIS
 	;
 
 ctor_initializer_opt:
-
+	/* empty */
 	| ctor_initializer
 	;
 
 COMMA_opt:
-
+	/* empty */
 	| ','
 	;
 
 member_specification_opt:
-
+	/* empty */
 	| member_specification
 	;
 
 base_clause_opt:
-
+	/* empty */
 	| base_clause
 	;
 
 member_declarator_list_opt:
-
+	/* empty */
 	| member_declarator_list
 	;
 
 SEMICOLON_opt:
-
+	/* empty */
 	| ';'
 	;
 
 pure_specifier_opt:
-
+	/* empty */
 	| pure_specifier
 	;
 
 constant_initializer_opt:
-
+	/* empty */
 	| constant_initializer
 	;
 
 access_specifier_opt:
-
+	/* empty */
 	| access_specifier
 	;
 
 VIRTUAL_opt:
-
+	/* empty */
 	| VIRTUAL
 	;
 
 conversion_declarator_opt:
-
+	/* empty */
 	| conversion_declarator
 	;
 
 EXPORT_opt:
-
+	/* empty */
 	| EXPORT
 	;
 
 handler_seq_opt:
-
+	/* empty */
 	| handler_seq
 	;
 
 assignment_expression_opt:
-
+	/* empty */
 	| assignment_expression
 	;
 
 type_id_list_opt:
-
+	/* empty */
 	| type_id_list
 	;
 
