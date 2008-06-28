@@ -2,7 +2,7 @@
 #include <assert.h>
 #include <limits.h>
 #include <sstream>
-#include "llgenerator.h"
+#include "generator.h"
 #include "parser.h"
 
 #include <boost/regex.hpp>

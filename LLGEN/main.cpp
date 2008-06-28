@@ -1,7 +1,7 @@
 
 #include <iostream>
 #include <fstream>
-#include "llgenerator.h"
+#include "generator.h"
 #include "parser.h"
 
 #ifdef _MSC_VER

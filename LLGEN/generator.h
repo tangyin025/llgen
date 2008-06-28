@@ -1,6 +1,6 @@
 
-#ifndef __LLGENERATOR_H__
-#define __LLGENERATOR_H__
+#ifndef __GENERATOR_H__
+#define __GENERATOR_H__
 
 #include <string>
 #include <vector>
@@ -365,4 +365,4 @@ namespace ll
 		const Grammar & grammar);
 }
 
-#endif // __LLGENERATOR_H__
+#endif // __GENERATOR_H__

@@ -2,7 +2,7 @@
 #ifndef __PARSER_H__
 #define __PARSER_H__
 
-#include "llgenerator.h"
+#include "generator.h"
 
 typedef ll::AstToken token_t;
 

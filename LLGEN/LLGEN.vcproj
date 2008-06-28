@@ -119,6 +119,9 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
+				RelativePath=".\generator.cpp">
+			</File>
+			<File
 				RelativePath=".\lexer.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -134,9 +137,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath=".\llgenerator.cpp">
-			</File>
-			<File
 				RelativePath=".\main.cpp">
 			</File>
 			<File
@@ -148,7 +148,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
 			<File
-				RelativePath=".\llgenerator.h">
+				RelativePath=".\generator.h">
 			</File>
 			<File
 				RelativePath=".\parser.h">
