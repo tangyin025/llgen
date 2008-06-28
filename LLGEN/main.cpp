@@ -8,8 +8,11 @@
 #include <crtdbg.h>
 #endif
 
+#pragma warning(disable: 4127) // warning C4127: 条件表达式是常数
+#pragma warning(disable: 4511) // warning C4511: “xxx” : 未能生成复制构造函数
+#pragma warning(disable: 4512) // warning C4512: “xxx” : 未能生成赋值运算符
+
 #include <boost/algorithm/string/case_conv.hpp>
-//#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/program_options.hpp>
 
@@ -30,7 +33,8 @@ static const boost::regex s_reg_NON_CHAR("[^a-zA-Z]", boost::regex::perl | boost
 std::string build_definite_header(const std::string & fname)
 {
 	std::string format = "_";
-	return "__" + boost::replace_all_regex_copy(fname, s_reg_NON_CHAR, format) + "__";
+	std::string ret = boost::algorithm::to_upper_copy(boost::replace_all_regex_copy(fname, s_reg_NON_CHAR, format));
+	return "__" + ret + "__";
 }
 
 int main(int argc, char ** argv)
