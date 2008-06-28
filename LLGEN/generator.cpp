@@ -132,7 +132,7 @@ namespace ll
 
 	static void insert_selection_set_inside(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
 	{
-		if(grammar.tokenSet.end() != grammar.tokenSet.find(symbolNode.first)
+		if(grammar.tokenSet.count(symbolNode.first)
 			|| is_character_symbol(symbolNode.first)
 			|| T_EMPTY == symbolNode.first)
 		{
@@ -140,10 +140,10 @@ namespace ll
 			return;
 		}
 
-		assert(grammar.productionMap.end() != grammar.productionMap.find(symbolNode.first));
+		assert(grammar.productionMap.count(symbolNode.first));
 
 		StringSet localSet;
-		if(securityStack.end() == securityStack.find(symbolNode.first))
+		if(!securityStack.count(symbolNode.first))
 		{
 			securityStack.insert(symbolNode.first);
 
@@ -154,7 +154,7 @@ namespace ll
 				insert_selection_set_inside(localSet, *sym_node_iter, grammar);
 			}
 
-			if(localSet.end() == localSet.find(T_EMPTY))
+			if(!localSet.count(T_EMPTY))
 			{
 				selectionSet.insert(localSet.begin(), localSet.end());
 				return;
@@ -209,7 +209,7 @@ namespace ll
 
 	bool find_left_recursion(StringList & returnPath, const Grammar & grammar, const std::string & symbol)
 	{
-		if(grammar.tokenSet.end() != grammar.tokenSet.find(symbol)
+		if(grammar.tokenSet.count(symbol)
 			|| is_character_symbol(symbol)
 			|| T_EMPTY == symbol)
 		{
@@ -228,7 +228,7 @@ namespace ll
 			return false;
 		}
 
-		assert(grammar.productionMap.end() != grammar.productionMap.find(symbol));
+		assert(grammar.productionMap.count(symbol));
 
 		returnPath.push_back(symbol);
 
@@ -274,7 +274,7 @@ namespace ll
 		SymbolMap * psymbolMap = &symbolMap;
 		for(; ast_node_iter != astNodeEnd; ast_node_iter++)
 		{
-			if(psymbolMap->end() == psymbolMap->find((*ast_node_iter)->getText()))
+			if(!psymbolMap->count((*ast_node_iter)->getText()))
 			{
 				psymbolMap->insert(SymbolNode((*ast_node_iter)->getText(), SymbolMap()));
 			}
@@ -322,7 +322,7 @@ namespace ll
 		ast_node_iter = astProductions->m_childs.begin();
 		for(; ast_node_iter != astProductions->m_childs.end(); ast_node_iter++)
 		{
-			if(grammar.productionMap.end() == grammar.productionMap.find((*ast_node_iter)->getText()))
+			if(!grammar.productionMap.count((*ast_node_iter)->getText()))
 			{
 				grammar.productionMap.insert(ProductionNode((*ast_node_iter)->getText(), SymbolMap()));
 			}
@@ -365,7 +365,7 @@ namespace ll
 		StringSet::const_iterator other_set_iter = other_set_iter_begin;
 		for(; other_set_iter != other_set_iter_end; other_set_iter++)
 		{
-			assert(set.end() != set.find(*other_set_iter));
+			assert(set.count(*other_set_iter));
 
 			set.erase(*other_set_iter);
 		}
@@ -417,7 +417,7 @@ namespace ll
 			output_indent(ostr, indent);
 			ostr << "if(" << function_prefix << "_shift_EMPTY(tokens, token_i, node" << deepth << "))" << std::endl;
 		}		
-		else if(grammar.tokenSet.end() != grammar.tokenSet.find(symbolNode.first)
+		else if(grammar.tokenSet.count(symbolNode.first)
 			|| is_character_symbol(symbolNode.first))
 		{
 			output_indent(ostr, indent);
@@ -751,7 +751,7 @@ namespace ll
 		AstNodePtrList::const_iterator ast_production_iter = astProductions->m_childs.begin();
 		for(; ast_production_iter != astProductions->m_childs.end(); ast_production_iter++)
 		{
-			assert(grammar.productionMap.end() != grammar.productionMap.find((*ast_production_iter)->getText()));
+			assert(grammar.productionMap.count((*ast_production_iter)->getText()));
 
 			if(ast_production_iter != astProductions->m_childs.begin())
 			{
@@ -884,7 +884,7 @@ namespace ll
 		AstNodePtrList::const_iterator ast_production_iter = astProductions->m_childs.begin();
 		for(; ast_production_iter != astProductions->m_childs.end(); ast_production_iter++)
 		{
-			assert(grammar.productionMap.end() != grammar.productionMap.find((*ast_production_iter)->getText()));
+			assert(grammar.productionMap.count((*ast_production_iter)->getText()));
 
 			output_parser_production_func_definition(ostr, function_prefix, *grammar.productionMap.find((*ast_production_iter)->getText()), grammar);
 		}
