@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="Debug"
-			IntermediateDirectory="Debug"
+			OutputDirectory="$(SolutionDir)../Common/bin/$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)../Common/obj/$(ConfigurationName)/$(SolutionName)/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
@@ -63,8 +63,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="Release"
-			IntermediateDirectory="Release"
+			OutputDirectory="$(SolutionDir)../Common/bin/$(ConfigurationName)"
+			IntermediateDirectory="$(SolutionDir)../Common/obj/$(ConfigurationName)/$(SolutionName)/$(ProjectName)"
 			ConfigurationType="1"
 			CharacterSet="2">
 			<Tool
