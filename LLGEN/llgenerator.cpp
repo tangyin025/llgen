@@ -2,9 +2,10 @@
 #include <assert.h>
 #include <limits.h>
 #include <sstream>
-#include <boost/regex.hpp>
 #include "llgenerator.h"
 #include "parser.h"
+
+#include <boost/regex.hpp>
 
 namespace ll
 {
@@ -721,10 +722,17 @@ namespace ll
 	void output_parser_cpp_source(
 		std::ostream & ostr,
 		const std::string & function_prefix,
+		const std::string & header_file,
 		const AstNodePtr astRoot,
 		const Grammar & grammar)
 	{
 		ostr << std::endl;
+
+		if(!header_file.empty())
+		{
+			ostr << "#include \"" << header_file << "\"" << std::endl;
+			ostr << std::endl;
+		}
 
 		output_parser_shift_EMPTY_func(ostr, function_prefix);
 

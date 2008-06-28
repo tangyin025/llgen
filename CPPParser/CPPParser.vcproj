@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
-	Name="LLGEN"
-	ProjectGUID="{CC650E07-87B4-4CB6-AC8C-1A5CB083E4F0}"
+	Name="CPPParser"
+	ProjectGUID="{1BB1F42F-8F72-425C-842C-155FB3C97AD5}"
 	Keyword="Win32Proj">
 	<Platforms>
 		<Platform
@@ -19,25 +19,22 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(boost_1_34_1)&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;BOOST_ALL_NO_LIB"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="5"
 				UsePrecompiledHeader="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="4"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_program_options-vc71-sgd-1_34.lib libboost_regex-vc71-sgd-1_34.lib"
-				OutputFile="$(OutDir)/LLGEN.exe"
+				OutputFile="$(OutDir)/CPPParser.exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(boost_1_34_1)\libs\program_options\build\vc71&quot;;&quot;$(boost_1_34_1)\libs\regex\build\vc71&quot;"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile="$(OutDir)/LLGEN.pdb"
+				ProgramDatabaseFile="$(OutDir)/CPPParser.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -69,21 +66,18 @@
 			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(boost_1_34_1)&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;BOOST_ALL_NO_LIB"
+				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="4"
 				UsePrecompiledHeader="0"
-				WarningLevel="4"
+				WarningLevel="3"
 				Detect64BitPortabilityProblems="TRUE"
 				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="libboost_program_options-vc71-sgd-1_34.lib libboost_regex-vc71-sgd-1_34.lib"
-				OutputFile="$(OutDir)/LLGEN.exe"
+				OutputFile="$(OutDir)/CPPParser.exe"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="&quot;$(boost_1_34_1)\libs\program_options\build\vc71&quot;;&quot;$(boost_1_34_1)\libs\regex\build\vc71&quot;"
 				GenerateDebugInformation="TRUE"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -120,21 +114,6 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
 			<File
 				RelativePath=".\lexer.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						WarningLevel="0"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						WarningLevel="0"/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath=".\llgenerator.cpp">
 			</File>
 			<File
 				RelativePath=".\main.cpp">
@@ -147,9 +126,6 @@
 			Name="Í·ÎÄ¼þ"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
-			<File
-				RelativePath=".\llgenerator.h">
-			</File>
 			<File
 				RelativePath=".\parser.h">
 			</File>

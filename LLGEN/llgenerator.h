@@ -312,6 +312,7 @@ namespace ll
 	void output_parser_cpp_source(
 		std::ostream & ostr,
 		const std::string & function_prefix,
+		const std::string & header_file,
 		const AstNodePtr astRoot,
 		const Grammar & grammar);
 
