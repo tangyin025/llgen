@@ -496,7 +496,7 @@ namespace ll
 		const int deepth)
 	{
 		output_indent(ostr, indent);
-		ostr << "switch(GET_TOKEN_ID(tokens[token_i]))" << std::endl;
+		ostr << "switch(tokens[token_i].tokenID)" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -661,10 +661,16 @@ namespace ll
 		ostr << "{" << std::endl;
 
 		output_indent(ostr, indent + 1);
-		ostr << "if(TOKEN_ID == GET_TOKEN_ID(tokens[token_i++]))" << std::endl;
+		ostr << "if(TOKEN_ID == tokens[token_i].tokenID)" << std::endl;
 
 		output_indent(ostr, indent + 1);
 		ostr << "{" << std::endl;
+
+		output_indent(ostr, indent + 2);
+		ostr << "node = tokens[token_i].node;" << std::endl;
+
+		output_indent(ostr, indent + 2);
+		ostr << "token_i++;" << std::endl;
 
 		output_indent(ostr, indent + 2);
 		ostr << "return true;" << std::endl;
@@ -867,13 +873,19 @@ namespace ll
 
 		output_parser_token_definition_list(ostr, astTokens->m_childs.begin(), astTokens->m_childs.end());
 
-		//ostr << std::endl;
+		ostr << std::endl;
 
-		//output_parser_typedef_definition(ostr, "int", "token_t");
+		output_parser_typedef_definition(ostr, "void *", "node_t");
 
-		//ostr << std::endl;
+		ostr << std::endl;
 
-		//output_parser_typedef_definition(ostr, "void *", "node_t");
+		ostr << "struct token_t" << std::endl;
+		ostr << "{" << std::endl;
+		output_indent(ostr, 1);
+		ostr << "int tokenID;" << std::endl;
+		output_indent(ostr, 1);
+		ostr << "node_t node;" << std::endl;
+		ostr << "};" << std::endl;
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
 
