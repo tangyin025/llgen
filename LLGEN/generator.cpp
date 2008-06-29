@@ -496,7 +496,7 @@ namespace ll
 		const int deepth)
 	{
 		output_indent(ostr, indent);
-		ostr << "switch(tokens[token_i])" << std::endl;
+		ostr << "switch(GET_TOKEN_ID(tokens[token_i]))" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -652,7 +652,7 @@ namespace ll
 		const int indent /*= 0*/)
 	{
 		output_indent(ostr, indent);
-		ostr << "template <int TOKEN>" << std::endl;
+		ostr << "template <int TOKEN_ID>" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "bool " << function_prefix << "_shift_token(token_t * tokens, int token_i, node_t & node)" << std::endl;
@@ -661,7 +661,7 @@ namespace ll
 		ostr << "{" << std::endl;
 
 		output_indent(ostr, indent + 1);
-		ostr << "if(TOKEN == tokens[token_i++])" << std::endl;
+		ostr << "if(TOKEN_ID == GET_TOKEN_ID(tokens[token_i++]))" << std::endl;
 
 		output_indent(ostr, indent + 1);
 		ostr << "{" << std::endl;
@@ -867,13 +867,13 @@ namespace ll
 
 		output_parser_token_definition_list(ostr, astTokens->m_childs.begin(), astTokens->m_childs.end());
 
-		ostr << std::endl;
+		//ostr << std::endl;
 
-		output_parser_typedef_definition(ostr, "int", "token_t");
+		//output_parser_typedef_definition(ostr, "int", "token_t");
 
-		ostr << std::endl;
+		//ostr << std::endl;
 
-		output_parser_typedef_definition(ostr, "void *", "node_t");
+		//output_parser_typedef_definition(ostr, "void *", "node_t");
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
 
