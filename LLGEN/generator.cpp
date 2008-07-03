@@ -486,6 +486,21 @@ namespace ll
 		}
 	}
 
+	bool have_empty_selection(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end)
+	{
+		SelectionBranchList::const_iterator selection_branch_iter = selection_branch_begin;
+		for(; selection_branch_iter != selection_branch_end; selection_branch_iter++)
+		{
+			if(selection_branch_iter->selectionSet.count(T_EMPTY))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
 	void output_parser_symbol_node_switch(
 		std::ostream & ostr,
 		const std::string & function_prefix,
@@ -496,7 +511,7 @@ namespace ll
 		const int deepth)
 	{
 		output_indent(ostr, indent);
-		ostr << "switch(tokens[token_i].tokenID)" << std::endl;
+		ostr << "switch(GET_TOKEN_ID(tokens, token_i))" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -517,6 +532,18 @@ namespace ll
 
 			output_indent(ostr, indent + 1);
 			ostr << "break;" << std::endl;
+		}
+
+		if(!have_empty_selection(selection_branch_begin, selection_branch_end))
+		{
+			assert(selection_branch_end != selection_branch_begin);
+			ostr << std::endl;
+
+			output_indent(ostr, indent);
+			ostr << "default:" << std::endl;
+
+			output_indent(ostr, indent + 1);
+			ostr << "REPORT_SWITCH_ERROR(tokens, token_i);" << std::endl;
 		}
 
 		output_indent(ostr, indent);
@@ -613,7 +640,7 @@ namespace ll
 		const int indent /*= 0*/)
 	{
 		output_indent(ostr, indent);
-		ostr << "bool " << function_prefix << "_" << production.first << "(token_t * tokens, int token_i, node_t & node)" << std::endl;
+		ostr << "bool " << function_prefix << "_" << production.first << "(const token_t * tokens, int & token_i, node_t & node)" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -634,7 +661,7 @@ namespace ll
 		const int indent /*= 0*/)
 	{
 		output_indent(ostr, indent);
-		ostr << "bool " << function_prefix << "_shift_EMPTY(token_t * tokens, int token_i, node_t & node)" << std::endl;
+		ostr << "bool " << function_prefix << "_shift_EMPTY(const token_t * tokens, int & token_i, node_t & node)" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
@@ -655,19 +682,16 @@ namespace ll
 		ostr << "template <int TOKEN_ID>" << std::endl;
 
 		output_indent(ostr, indent);
-		ostr << "bool " << function_prefix << "_shift_token(token_t * tokens, int token_i, node_t & node)" << std::endl;
+		ostr << "bool " << function_prefix << "_shift_token(const token_t * tokens, int & token_i, node_t & node)" << std::endl;
 
 		output_indent(ostr, indent);
 		ostr << "{" << std::endl;
 
 		output_indent(ostr, indent + 1);
-		ostr << "if(TOKEN_ID == tokens[token_i].tokenID)" << std::endl;
+		ostr << "if(TOKEN_ID == GET_TOKEN_ID(tokens, token_i))" << std::endl;
 
 		output_indent(ostr, indent + 1);
 		ostr << "{" << std::endl;
-
-		output_indent(ostr, indent + 2);
-		ostr << "node = tokens[token_i].node;" << std::endl;
 
 		output_indent(ostr, indent + 2);
 		ostr << "token_i++;" << std::endl;
@@ -677,6 +701,11 @@ namespace ll
 
 		output_indent(ostr, indent + 1);
 		ostr << "}" << std::endl;
+
+		ostr << std::endl;
+
+		output_indent(ostr, indent + 1);
+		ostr << "REPORT_SHIFT_ERROR(tokens, token_i, TOKEN_ID);" << std::endl;
 
 		output_indent(ostr, indent + 1);
 		ostr << "return false;" << std::endl;
@@ -737,8 +766,21 @@ namespace ll
 		if(!header_file.empty())
 		{
 			ostr << "#include \"" << header_file << "\"" << std::endl;
+
 			ostr << std::endl;
 		}
+
+		ostr << "#define GET_TOKEN_ID(tokens, token_i) tokens[token_i]" << std::endl;
+
+		ostr << std::endl;
+
+		ostr << "#define REPORT_SHIFT_ERROR(tokens, token_i, TOKEN_ID)" << std::endl;
+
+		ostr << std::endl;
+
+		ostr << "#define REPORT_SWITCH_ERROR(tokens, token_i)" << std::endl;
+
+		ostr << std::endl;
 
 		output_parser_shift_EMPTY_func(ostr, function_prefix);
 
@@ -846,7 +888,7 @@ namespace ll
 		const int indent /*= 0*/)
 	{
 		output_indent(ostr, indent);
-		ostr << "bool " << function_prefix << "_" << production.first << "(token_t * tokens, int token_i, node_t & node);" << std::endl;
+		ostr << "bool " << function_prefix << "_" << production.first << "(const token_t * tokens, int & token_i, node_t & node);" << std::endl;
 
 		return;
 		grammar;
@@ -875,17 +917,11 @@ namespace ll
 
 		ostr << std::endl;
 
-		output_parser_typedef_definition(ostr, "void *", "node_t");
+		output_parser_typedef_definition(ostr, "int", "token_t");
 
 		ostr << std::endl;
 
-		ostr << "struct token_t" << std::endl;
-		ostr << "{" << std::endl;
-		output_indent(ostr, 1);
-		ostr << "int tokenID;" << std::endl;
-		output_indent(ostr, 1);
-		ostr << "node_t node;" << std::endl;
-		ostr << "};" << std::endl;
+		output_parser_typedef_definition(ostr, "void *", "node_t");
 
 		AstNodePtr astProductions = astRoot->m_childs[1];
 

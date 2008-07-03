@@ -261,6 +261,10 @@ namespace ll
 		const StringSet::const_iterator selection_set_end,
 		const int indent);
 
+	bool have_empty_selection(
+		const SelectionBranchList::const_iterator selection_branch_begin,
+		const SelectionBranchList::const_iterator selection_branch_end);
+
 	void output_parser_symbol_node_switch(
 		std::ostream & ostr,
 		const std::string & function_prefix,
