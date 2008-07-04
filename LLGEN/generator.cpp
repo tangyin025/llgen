@@ -204,10 +204,12 @@ namespace ll
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// find_left_recursion
+	// report_left_recursion
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	bool find_left_recursion(StringList & returnPath, const Grammar & grammar, const std::string & symbol)
+	typedef std::vector<std::string> StringList;
+
+	static bool find_left_recursion(StringList & returnPath, const Grammar & grammar, const std::string & symbol)
 	{
 		if(grammar.tokenSet.count(symbol)
 			|| is_character_symbol(symbol)
@@ -246,11 +248,7 @@ namespace ll
 		return false;
 	}
 
-	// //////////////////////////////////////////////////////////////////////////////////
-	// report_left_recursion_path
-	// //////////////////////////////////////////////////////////////////////////////////
-
-	void report_left_recursion_path(std::ostream & ostr, const StringList & recursionPath)
+	static void output_left_recursion_path(std::ostream & ostr, const StringList & recursionPath)
 	{
 		assert(recursionPath.size() >= 1);
 
@@ -263,6 +261,28 @@ namespace ll
 			ostr << " -> " << *sym_iter << std::endl;
 		}
 	}
+
+	void report_left_recursion(std::ostream & ostr, const Grammar & grammar)
+	{
+		ProductionMap::const_iterator production_iter = grammar.productionMap.begin();
+		for(; production_iter != grammar.productionMap.end(); production_iter++)
+		{
+			StringList returnPath;
+			if(find_left_recursion(returnPath, grammar, production_iter->first))
+			{
+				output_left_recursion_path(ostr, returnPath);
+			}
+		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// report_empty_conflict
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	//void report_empty_conflict(std::ostream & ostr, const Grammar & grammar)
+	//{
+	//	;
+	//}
 
 	// //////////////////////////////////////////////////////////////////////////////////
 	// convert_ast_tree_to_ll_grammar

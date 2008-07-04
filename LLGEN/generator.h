@@ -193,18 +193,16 @@ namespace ll
 	void output_selection_set(std::ostream & ostr, const StringSet & selectionSet, int indent);
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// find_left_recursion
+	// report_left_recursion
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	typedef std::vector<std::string> StringList;
-
-	bool find_left_recursion(StringList & returnPath, const Grammar & grammar, const std::string & symbol);
+	void report_left_recursion(std::ostream & ostr, const Grammar & grammar);
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// report_left_recursion_path
+	// report_empty_conflict
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	void report_left_recursion_path(std::ostream & ostr, const StringList & recursionPath);
+	//void report_empty_conflict(std::ostream & ostr, const Grammar & grammar);
 
 	// //////////////////////////////////////////////////////////////////////////////////
 	// convert_ast_tree_to_ll_grammar

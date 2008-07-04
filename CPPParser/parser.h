@@ -1,6 +1,6 @@
 
-#ifndef __E__VC____NET______WORKS_SGS_LLSOLUTION__CPPPARSER_PARSER_H__
-#define __E__VC____NET______WORKS_SGS_LLSOLUTION__CPPPARSER_PARSER_H__
+#ifndef __PARSER_H__
+#define __PARSER_H__
 
 #define IDENTIFIER 256
 #define INTEGER 257
@@ -294,4 +294,4 @@ bool cpp_parser_handler_seq_opt(const token_t * tokens, int & token_i, node_t & 
 bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i, node_t & node);
 bool cpp_parser_type_id_list_opt(const token_t * tokens, int & token_i, node_t & node);
 
-#endif //__E__VC____NET______WORKS_SGS_LLSOLUTION__CPPPARSER_PARSER_H__
+#endif //__PARSER_H__

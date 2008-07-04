@@ -1,5 +1,5 @@
 
-#include "E:\VC++ .NET 2003\works\SGS\LLSolution\/CPPParser/parser.h"
+#include "parser.h"
 
 #define GET_TOKEN_ID(tokens, token_i) tokens[token_i]
 

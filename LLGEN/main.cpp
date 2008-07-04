@@ -8,13 +8,16 @@
 #include <crtdbg.h>
 #endif
 
-#pragma warning(disable: 4127) // warning C4127: 条件表达式是常数
-#pragma warning(disable: 4511) // warning C4511: “xxx” : 未能生成复制构造函数
-#pragma warning(disable: 4512) // warning C4512: “xxx” : 未能生成赋值运算符
-
+#pragma warning(push)
+#pragma warning(disable: 4127) // warning C4127: conditional expression is constant
+#pragma warning(disable: 4511) // warning C4511: 'class' : copy constructor could not be generated
+#pragma warning(disable: 4512) // warning C4512: 'class' : assignment operator could not be generated
+#pragma warning(disable: 4819) // warning C4819: The file contains a character that cannot be represented in the current code page (932). Save the file in Unicode format to prevent data loss
 #include <boost/algorithm/string/case_conv.hpp>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/regex.hpp>
 #include <boost/program_options.hpp>
+#pragma warning(pop)
 
 extern FILE * yyin;
 
@@ -30,10 +33,17 @@ typedef std::vector<std::string> StringList;
 
 static const boost::regex s_reg_NON_CHAR("[^a-zA-Z]", boost::regex::perl | boost::regex::icase);
 
-std::string build_definite_header(const std::string & fname)
+static std::string build_local_file_name(const std::string & fname)
+{
+	std::string::size_type pos = boost::algorithm::replace_all_copy(fname, "\\", "/").find_last_of('/');
+	pos = std::string::npos == pos ? 0 : pos + 1;
+	return fname.substr(pos);
+}
+
+static std::string build_definite_header(const std::string & fname)
 {
 	std::string format = "_";
-	std::string ret = boost::algorithm::to_upper_copy(boost::replace_all_regex_copy(fname, s_reg_NON_CHAR, format));
+	std::string ret = boost::algorithm::to_upper_copy(boost::algorithm::replace_all_regex_copy(fname, s_reg_NON_CHAR, format));
 	return "__" + ret + "__";
 }
 
@@ -124,15 +134,7 @@ int main(int argc, char ** argv)
 		// check and report left-recursion
 		if(vmap.count("left-recusion"))
 		{
-			ll::ProductionMap::const_iterator production_iter = llGrammar.productionMap.begin();
-			for(; production_iter != llGrammar.productionMap.end(); production_iter++)
-			{
-				ll::StringList returnPath;
-				if(ll::find_left_recursion(returnPath, llGrammar, production_iter->first))
-				{
-					ll::report_left_recursion_path(std::cout, returnPath);
-				}
-			}
+			ll::report_left_recursion(std::cout, llGrammar);
 		}
 
 		// output selection set
@@ -155,12 +157,13 @@ int main(int argc, char ** argv)
 		std::string headerFileName = vmap["header-file"].as<std::string>();
 		std::string functionPrefix = vmap["function-prefix"].as<std::string>();
 		std::ofstream ofstrHeader(headerFileName.c_str());
+		std::string localHeaderFileName = build_local_file_name(headerFileName);
 		if(ofstrHeader)
 		{
 			ll::output_parser_cpp_header(
 				ofstrHeader,
 				functionPrefix,
-				build_definite_header(headerFileName),
+				build_definite_header(localHeaderFileName),
 				astRoot,
 				llGrammar);
 		}
@@ -173,7 +176,7 @@ int main(int argc, char ** argv)
 			ll::output_parser_cpp_source(
 				ofstrSource,
 				functionPrefix,
-				headerFileName,
+				localHeaderFileName,
 				astRoot,
 				llGrammar);
 		}
