@@ -1,3 +1,35 @@
+/*	$Id: parser.y,v 1.3 1997/11/19 15:13:16 sandro Exp $	*/
+
+/*
+ * Copyright (c) 1997 Sandro Sigala <ssigala@globalnet.it>.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*
+ * ISO C++ parser.
+ *
+ * Based on the ISO C++ draft standard of December '96.
+ */
 
 %token IDENTIFIER INTEGER FLOATING CHARACTER STRING
 %token TYPEDEF_NAME NAMESPACE_NAME CLASS_NAME ENUM_NAME TEMPLATE_NAME
@@ -14,9 +46,16 @@
 %token THROW TRUE TRY TYPEDEF TYPEID TYPENAME UNION UNSIGNED USING VIRTUAL
 %token VOID VOLATILE WCHAR_T WHILE
 
+//%start translation_unit
+
 %%
 
+/*----------------------------------------------------------------------
+ * Context-dependent identifiers.
+ *----------------------------------------------------------------------*/
+
 typedef_name:
+	/* identifier */
 	TYPEDEF_NAME
 	;
 
@@ -26,25 +65,34 @@ namespace_name:
 	;
 
 original_namespace_name:
+	/* identifier */
 	NAMESPACE_NAME
 	;
 
 namespace_alias:
+	/* identifier */
 	NAMESPACE_NAME
 	;
 
 class_name:
+	/* identifier */
 	CLASS_NAME
 	| template_id
 	;
 
 enum_name:
+	/* identifier */
 	ENUM_NAME
 	;
 
 template_name:
+	/* identifier */
 	TEMPLATE_NAME
 	;
+
+/*----------------------------------------------------------------------
+ * Lexical elements.
+ *----------------------------------------------------------------------*/
 
 identifier:
 	IDENTIFIER
@@ -79,9 +127,17 @@ boolean_literal:
 	| FALSE
 	;
 
+/*----------------------------------------------------------------------
+ * Translation unit.
+ *----------------------------------------------------------------------*/
+
 translation_unit:
 	declaration_seq_opt
 	;
+
+/*----------------------------------------------------------------------
+ * Expressions.
+ *----------------------------------------------------------------------*/
 
 primary_expression:
 	literal
@@ -303,6 +359,10 @@ constant_expression:
 	conditional_expression
 	;
 
+/*----------------------------------------------------------------------
+ * Statements.
+ *----------------------------------------------------------------------*/
+
 statement:
 	labeled_statement
 	| expression_statement
@@ -366,6 +426,10 @@ declaration_statement:
 	block_declaration
 	;
 
+/*----------------------------------------------------------------------
+ * Declarations.
+ *----------------------------------------------------------------------*/
+
 declaration_seq:
 	declaration
 	| declaration_seq declaration
@@ -419,6 +483,12 @@ function_specifier:
 	| EXPLICIT
 	;
 
+/*
+typedef_name:
+	identifier
+	;
+*/
+
 type_specifier:
 	simple_type_specifier
 	| class_specifier
@@ -455,6 +525,12 @@ elaborated_type_specifier:
 	| TYPENAME COLONCOLON_opt nested_name_specifier identifier '<' template_argument_list '>'
 	;
 
+/*
+enum_name:
+	identifier
+	;
+*/
+
 enum_specifier:
 	ENUM identifier_opt '{' enumerator_list_opt '}'
 	;
@@ -472,6 +548,17 @@ enumerator_definition:
 enumerator:
 	identifier
 	;
+
+/*
+namespace_name:
+	original_namespace_name
+	| namespace_alias
+	;
+
+original_namespace_name:
+	identifier
+	;
+*/
 
 namespace_definition:
 	named_namespace_definition
@@ -499,6 +586,12 @@ namespace_body:
 	declaration_seq_opt
 	;
 
+/*
+namespace_alias:
+	identifier
+	;
+*/
+
 namespace_alias_definition:
 	NAMESPACE identifier '=' qualified_namespace_specifier ';'
 	;
@@ -524,6 +617,10 @@ linkage_specification:
 	EXTERN string_literal '{' declaration_seq_opt '}'
 	| EXTERN string_literal declaration
 	;
+
+/*----------------------------------------------------------------------
+ * Declarators.
+ *----------------------------------------------------------------------*/
 
 init_declarator_list:
 	init_declarator
@@ -627,6 +724,17 @@ initializer_list:
 	| initializer_list ',' initializer_clause
 	;
 
+/*----------------------------------------------------------------------
+ * Classes.
+ *----------------------------------------------------------------------*/
+
+/*
+class_name:
+	identifier
+	| template_id
+	;
+*/
+
 class_specifier:
 	class_head '{' member_specification_opt '}'
 	;
@@ -666,6 +774,11 @@ member_declarator:
 	| identifier_opt ':' constant_expression
 	;
 
+/*
+ * This rule need a hack for working around the ``= 0'' pure specifier.
+ * 0 is returned as an ``INTEGER'' by the lexical analyzer but in this
+ * context is different.
+ */
 pure_specifier:
 	'=' '0'
 	;
@@ -673,6 +786,10 @@ pure_specifier:
 constant_initializer:
 	'=' constant_expression
 	;
+
+/*----------------------------------------------------------------------
+ * Derived classes.
+ *----------------------------------------------------------------------*/
 
 base_clause:
 	':' base_specifier_list
@@ -694,6 +811,10 @@ access_specifier:
 	| PROTECTED
 	| PUBLIC
 	;
+
+/*----------------------------------------------------------------------
+ * Special member functions.
+ *----------------------------------------------------------------------*/
 
 conversion_function_id:
 	OPERATOR conversion_type_id
@@ -724,6 +845,10 @@ mem_initializer_id:
 	COLONCOLON_opt nested_name_specifier_opt class_name
 	| identifier
 	;
+
+/*----------------------------------------------------------------------
+ * Overloading.
+ *----------------------------------------------------------------------*/
 
 operator_function_id:
 	OPERATOR operator
@@ -774,6 +899,10 @@ operator:
 	| '[' ']'
 	;
 
+/*----------------------------------------------------------------------
+ * Templates.
+ *----------------------------------------------------------------------*/
+
 template_declaration:
 	EXPORT_opt TEMPLATE '<' template_parameter_list '>' declaration
 	;
@@ -801,6 +930,12 @@ template_id:
 	template_name '<' template_argument_list '>'
 	;
 
+/*
+template_name:
+	identifier
+	;
+*/
+
 template_argument_list:
 	template_argument
 	| template_argument_list ',' template_argument
@@ -819,6 +954,10 @@ explicit_instantiation:
 explicit_specialization:
 	TEMPLATE '<' '>' declaration
 	;
+
+/*----------------------------------------------------------------------
+ * Exception handling.
+ *----------------------------------------------------------------------*/
 
 try_block:
 	TRY compound_statement handler_seq
@@ -856,203 +995,207 @@ type_id_list:
 	| type_id_list ',' type_id
 	;
 
+/*----------------------------------------------------------------------
+ * Epsilon (optional) definitions.
+ *----------------------------------------------------------------------*/
+
 declaration_seq_opt:
-	/* empty */
+	/* epsilon */
 	| declaration_seq
 	;
 
 TEMPLATE_opt:
-	/* empty */
+	/* epsilon */
 	| TEMPLATE
 	;
 
 nested_name_specifier_opt:
-	/* empty */
+	/* epsilon */
 	| nested_name_specifier
 	;
 
 expression_list_opt:
-	/* empty */
+	/* epsilon */
 	| expression_list
 	;
 
 COLONCOLON_opt:
-	/* empty */
+	/* epsilon */
 	| COLONCOLON
 	;
 
 new_placement_opt:
-	/* empty */
+	/* epsilon */
 	| new_placement
 	;
 
 new_initializer_opt:
-	/* empty */
+	/* epsilon */
 	| new_initializer
 	;
 
 new_declarator_opt:
-	/* empty */
+	/* epsilon */
 	| new_declarator
 	;
 
 expression_opt:
-	/* empty */
+	/* epsilon */
 	| expression
 	;
 
 statement_seq_opt:
-	/* empty */
+	/* epsilon */
 	| statement_seq
 	;
 
 condition_opt:
-	/* empty */
+	/* epsilon */
 	| condition
 	;
 
 decl_specifier_seq_opt:
-	/* empty */
+	/* epsilon */
 	| decl_specifier_seq
 	;
 
 init_declarator_list_opt:
-	/* empty */
+	/* epsilon */
 	| init_declarator_list
 	;
 
 identifier_opt:
-	/* empty */
+	/* epsilon */
 	| identifier
 	;
 
 enumerator_list_opt:
-	/* empty */
+	/* epsilon */
 	| enumerator_list
 	;
 
 TYPENAME_opt:
-	/* empty */
+	/* epsilon */
 	| TYPENAME
 	;
 
 initializer_opt:
-	/* empty */
+	/* epsilon */
 	| initializer
 	;
 
 cv_qualifier_seq_opt:
-	/* empty */
+	/* epsilon */
 	| cv_qualifier_seq
 	;
 
 exception_specification_opt:
-	/* empty */
+	/* epsilon */
 	| exception_specification
 	;
 
 constant_expression_opt:
-	/* empty */
+	/* epsilon */
 	| constant_expression
 	;
 
 abstract_declarator_opt:
-	/* empty */
+	/* epsilon */
 	| abstract_declarator
 	;
 
 type_specifier_seq_opt:
-	/* empty */
+	/* epsilon */
 	| type_specifier_seq
 	;
 
 direct_abstract_declarator_opt:
-	/* empty */
+	/* epsilon */
 	| direct_abstract_declarator
 	;
 
 parameter_declaration_list_opt:
-	/* empty */
+	/* epsilon */
 	| parameter_declaration_list
 	;
 
 ELLIPSIS_opt:
-	/* empty */
+	/* epsilon */
 	| ELLIPSIS
 	;
 
 ctor_initializer_opt:
-	/* empty */
+	/* epsilon */
 	| ctor_initializer
 	;
 
 COMMA_opt:
-	/* empty */
+	/* epsilon */
 	| ','
 	;
 
 member_specification_opt:
-	/* empty */
+	/* epsilon */
 	| member_specification
 	;
 
 base_clause_opt:
-	/* empty */
+	/* epsilon */
 	| base_clause
 	;
 
 member_declarator_list_opt:
-	/* empty */
+	/* epsilon */
 	| member_declarator_list
 	;
 
 SEMICOLON_opt:
-	/* empty */
+	/* epsilon */
 	| ';'
 	;
 
 pure_specifier_opt:
-	/* empty */
+	/* epsilon */
 	| pure_specifier
 	;
 
 constant_initializer_opt:
-	/* empty */
+	/* epsilon */
 	| constant_initializer
 	;
 
 access_specifier_opt:
-	/* empty */
+	/* epsilon */
 	| access_specifier
 	;
 
 VIRTUAL_opt:
-	/* empty */
+	/* epsilon */
 	| VIRTUAL
 	;
 
 conversion_declarator_opt:
-	/* empty */
+	/* epsilon */
 	| conversion_declarator
 	;
 
 EXPORT_opt:
-	/* empty */
+	/* epsilon */
 	| EXPORT
 	;
 
 handler_seq_opt:
-	/* empty */
+	/* epsilon */
 	| handler_seq
 	;
 
 assignment_expression_opt:
-	/* empty */
+	/* epsilon */
 	| assignment_expression
 	;
 
 type_id_list_opt:
-	/* empty */
+	/* epsilon */
 	| type_id_list
 	;
 
