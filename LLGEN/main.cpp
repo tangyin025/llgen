@@ -58,10 +58,11 @@ int main(int argc, char ** argv)
 	boost::program_options::options_description desc("llgen options");
 	desc.add_options()
 		("ast-tree,A", "output ast tree to std::cout")
-		("left-recusion,L", "output left recusion to std::cout")
+		("left-recursion,L", "output left recursion to std::cout")
+		("empty_conflict,E", "output empty conflict to std::cout")
 		("first-selection,F", "output first selection to std::cout")
-		("header-file,H", boost::program_options::value<std::string>(&opt)->default_value("ll.parser.h"), "specify output header file")
-		("source-file,S", boost::program_options::value<std::string>(&opt)->default_value("ll.parser.cpp"), "specify output source file")
+		("header-file,H", boost::program_options::value<std::string>(), "specify output header file")
+		("source-file,S", boost::program_options::value<std::string>(), "specify output source file")
 		("function-prefix,P", boost::program_options::value<std::string>(&opt)->default_value("ll_parser"), "specify function prefix for source")
 		("input-file", boost::program_options::value<StringList>(), "input files");
 		;
@@ -115,7 +116,6 @@ int main(int argc, char ** argv)
 			}
 
 			// convert ast tree to grammar
-			ll::Grammar grammar;
 			if(!ll::convert_ast_tree_to_ll_grammar(llGrammar, astRoot, std::cerr))
 			{
 				exit(1);
@@ -132,9 +132,15 @@ int main(int argc, char ** argv)
 		}
 
 		// check and report left-recursion
-		if(vmap.count("left-recusion"))
+		if(vmap.count("left-recursion"))
 		{
 			ll::report_left_recursion(std::cout, llGrammar);
+		}
+
+		// check and report empty-conflict
+		if(vmap.count("empty_conflict"))
+		{
+			ll::report_empty_conflict(std::cout, llGrammar);
 		}
 
 		// output selection set
@@ -144,41 +150,49 @@ int main(int argc, char ** argv)
 			for(; production_iter != llGrammar.productionMap.end(); production_iter++)
 			{
 				ll::StringSet selectionSet;
-				ll::insert_selection_set(selectionSet, production_iter->second.begin(), production_iter->second.end(), llGrammar);
+				ll::insert_first_selection_set(selectionSet, production_iter->first, llGrammar);
 
 				std::cout << "FIRST(" << production_iter->first << "):" << std::endl;
 				ll::output_selection_set(std::cout, selectionSet, 1);
 			}
 		}
 
-		// output header file
-		assert(vmap.count("header-file"));
 		assert(vmap.count("function-prefix"));
-		std::string headerFileName = vmap["header-file"].as<std::string>();
 		std::string functionPrefix = vmap["function-prefix"].as<std::string>();
-		std::ofstream ofstrHeader(headerFileName.c_str());
-		std::string localHeaderFileName = build_local_file_name(headerFileName);
-		if(ofstrHeader)
+
+		// output header file
+		std::string localHeaderFileName;
+		if(vmap.count("header-file"))
 		{
-			ll::output_parser_cpp_header(
-				ofstrHeader,
-				functionPrefix,
-				build_definite_header(localHeaderFileName),
-				astRoot,
-				llGrammar);
+			assert(vmap.count("function-prefix"));
+			std::string headerFileName = vmap["header-file"].as<std::string>();
+			std::ofstream ofstrHeader(headerFileName.c_str());
+			localHeaderFileName = build_local_file_name(headerFileName);
+			if(ofstrHeader)
+			{
+				ll::output_parser_cpp_header(
+					ofstrHeader,
+					functionPrefix,
+					build_definite_header(localHeaderFileName),
+					astRoot,
+					llGrammar);
+			}
 		}
 
 		// output source file
-		std::string sourceFileName = vmap["source-file"].as<std::string>();
-		std::ofstream ofstrSource(sourceFileName.c_str());
-		if(ofstrSource)
+		if(vmap.count("source-file"))
 		{
-			ll::output_parser_cpp_source(
-				ofstrSource,
-				functionPrefix,
-				localHeaderFileName,
-				astRoot,
-				llGrammar);
+			std::string sourceFileName = vmap["source-file"].as<std::string>();
+			std::ofstream ofstrSource(sourceFileName.c_str());
+			if(ofstrSource)
+			{
+				ll::output_parser_cpp_source(
+					ofstrSource,
+					functionPrefix,
+					localHeaderFileName,
+					astRoot,
+					llGrammar);
+			}
 		}
 	}
 	return 0;

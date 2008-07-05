@@ -190,6 +190,26 @@ namespace ll
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
+	// insert_first_selection_set
+	// //////////////////////////////////////////////////////////////////////////////////
+
+	void insert_first_selection_set(StringSet & selectionSet, const std::string & symbol, const Grammar & grammar)
+	{
+		if(grammar.productionMap.count(symbol))
+		{
+			insert_selection_set(
+				selectionSet,
+				grammar.productionMap.find(symbol)->second.begin(),
+				grammar.productionMap.find(symbol)->second.end(),
+				grammar);
+		}
+		else
+		{
+			selectionSet.insert(symbol);
+		}
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
 	// output_selection_set
 	// //////////////////////////////////////////////////////////////////////////////////
 
@@ -279,10 +299,72 @@ namespace ll
 	// report_empty_conflict
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	//void report_empty_conflict(std::ostream & ostr, const Grammar & grammar)
-	//{
-	//	;
-	//}
+	static void output_empty_conflict_result(
+		std::ostream & ostr,
+		SymbolMap::const_iterator fst_symbol_node_iter,
+		SymbolMap::const_iterator sec_symbol_node_iter,
+		const StringSet & intersectionSet)
+	{
+		assert(!intersectionSet.count(T_EMPTY));
+
+		ostr << fst_symbol_node_iter->first << " . " << sec_symbol_node_iter->first << std::endl;
+
+		output_selection_set(ostr, intersectionSet, 1);
+	}
+
+	static void report_empty_conflict_inside(
+		std::ostream & ostr,
+		SymbolMap::const_iterator fst_symbol_node_iter,
+		SymbolMap::const_iterator sec_symbol_node_iter,
+		const Grammar & grammar)
+	{
+		StringSet fst_selection_set;
+		insert_first_selection_set(fst_selection_set, fst_symbol_node_iter->first, grammar);
+
+		if(fst_selection_set.count(T_EMPTY))
+		{
+			fst_selection_set.erase(T_EMPTY);
+
+			StringSet sec_selection_set;
+			insert_first_selection_set(sec_selection_set, sec_symbol_node_iter->first, grammar);
+
+			StringSet intersectionSet;
+			std::set_intersection(
+				fst_selection_set.begin(),
+				fst_selection_set.end(),
+				sec_selection_set.begin(),
+				sec_selection_set.end(),
+				std::inserter(intersectionSet, intersectionSet.begin()));
+
+			if(!intersectionSet.empty())
+			{
+				output_empty_conflict_result(ostr, fst_symbol_node_iter, sec_symbol_node_iter, intersectionSet);
+			}
+		}
+
+		SymbolMap::const_iterator new_sec_symbol_node_iter = sec_symbol_node_iter->second.begin();
+		for(; new_sec_symbol_node_iter != sec_symbol_node_iter->second.end(); new_sec_symbol_node_iter++)
+		{
+			report_empty_conflict_inside(ostr, sec_symbol_node_iter, new_sec_symbol_node_iter, grammar);
+		}
+	}
+
+	void report_empty_conflict(std::ostream & ostr, const Grammar & grammar)
+	{
+		ProductionMap::const_iterator production_node_iter = grammar.productionMap.begin();
+		for(; production_node_iter != grammar.productionMap.end(); production_node_iter++)
+		{
+			SymbolMap::const_iterator fst_symbol_node_iter = production_node_iter->second.begin();
+			for(; fst_symbol_node_iter != production_node_iter->second.end(); fst_symbol_node_iter++)
+			{
+				SymbolMap::const_iterator sec_symbol_node_iter = fst_symbol_node_iter->second.begin();
+				for(; sec_symbol_node_iter != fst_symbol_node_iter->second.end(); sec_symbol_node_iter++)
+				{
+					report_empty_conflict_inside(ostr, fst_symbol_node_iter, sec_symbol_node_iter, grammar);
+				}
+			}
+		}
+	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
 	// convert_ast_tree_to_ll_grammar
