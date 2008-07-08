@@ -456,6 +456,12 @@ bool cpp_parser_id_expression(const token_t * tokens, int & token_i, node_t & no
     {
     case CLASS_NAME:
     case NAMESPACE_NAME:
+        if(cpp_parser_qualified_id(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
     case TEMPLATE_NAME:
         if(cpp_parser_qualified_id(tokens, token_i, node1))
         {
@@ -510,6 +516,13 @@ bool cpp_parser_unqualified_id(const token_t * tokens, int & token_i, node_t & n
         }
         break;
 
+    case IDENTIFIER:
+        if(cpp_parser_identifier(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
     case OPERATOR:
         if(cpp_parser_conversion_function_id(tokens, token_i, node1))
         {
@@ -518,13 +531,6 @@ bool cpp_parser_unqualified_id(const token_t * tokens, int & token_i, node_t & n
 
         token_i = current_i;
         if(cpp_parser_operator_function_id(tokens, token_i, node1))
-        {
-            return true;
-        }
-        break;
-
-    case IDENTIFIER:
-        if(cpp_parser_identifier(tokens, token_i, node1))
         {
             return true;
         }
@@ -705,13 +711,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -769,13 +789,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -889,13 +923,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -953,13 +1001,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1073,13 +1135,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1137,13 +1213,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1257,13 +1347,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1321,13 +1425,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1394,80 +1512,56 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 switch(GET_TOKEN_ID(tokens, token_i))
                 {
                 case '!':
-                case '%':
                 case '&':
                 case '(':
                 case '*':
                 case '+':
-                case ',':
                 case '-':
-                case '.':
-                case '/':
-                case '<':
-                case '=':
-                case '>':
-                case '[':
-                case '^':
-                case '|':
                 case '~':
-                case ADDEQ:
-                case ANDAND:
-                case ANDEQ:
-                case ARROW:
-                case ARROWSTAR:
-                case BOOL:
-                case CHAR:
                 case CHARACTER:
-                case CLASS_NAME:
-                case COLONCOLON:
                 case CONST_CAST:
                 case DELETE:
-                case DIVEQ:
-                case DOTSTAR:
-                case DOUBLE:
                 case DYNAMIC_CAST:
-                case ENUM_NAME:
-                case EQ:
                 case FALSE:
-                case FLOAT:
                 case FLOATING:
-                case GTEQ:
                 case IDENTIFIER:
-                case INT:
                 case INTEGER:
-                case LONG:
-                case LTEQ:
                 case MINUSMINUS:
-                case MODEQ:
-                case MULEQ:
-                case NAMESPACE_NAME:
-                case NEW:
-                case NOTEQ:
                 case OPERATOR:
-                case OREQ:
-                case OROR:
                 case PLUSPLUS:
                 case REINTERPRET_CAST:
-                case SHORT:
-                case SIGNED:
                 case SIZEOF:
-                case SL:
-                case SLEQ:
-                case SR:
-                case SREQ:
                 case STATIC_CAST:
                 case STRING:
-                case SUBEQ:
-                case TEMPLATE_NAME:
                 case THIS:
                 case THROW:
                 case TRUE:
-                case TYPEDEF_NAME:
                 case TYPEID:
+                    if(cpp_parser_expression(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_shift_token<')'>(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+
+                case BOOL:
+                case CHAR:
+                case CLASS_NAME:
+                case COLONCOLON:
+                case DOUBLE:
+                case FLOAT:
+                case INT:
+                case LONG:
+                case NAMESPACE_NAME:
+                case SHORT:
+                case SIGNED:
+                case TEMPLATE_NAME:
                 case UNSIGNED:
                 case VOID:
                 case WCHAR_T:
-                case XOREQ:
                     if(cpp_parser_expression(tokens, token_i, node3))
                     {
                         node_t node4;
@@ -1491,7 +1585,9 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 case CLASS:
                 case CONST:
                 case ENUM:
+                case ENUM_NAME:
                 case STRUCT:
+                case TYPEDEF_NAME:
                 case TYPENAME:
                 case UNION:
                 case VOLATILE:
@@ -1539,13 +1635,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1603,13 +1713,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1666,38 +1790,16 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
         break;
 
     case '(':
-    case '.':
-    case '[':
     case '~':
-    case ARROW:
-    case BOOL:
-    case CHAR:
     case CHARACTER:
-    case CLASS_NAME:
-    case COLONCOLON:
-    case DOUBLE:
-    case ENUM_NAME:
     case FALSE:
-    case FLOAT:
     case FLOATING:
     case IDENTIFIER:
-    case INT:
     case INTEGER:
-    case LONG:
-    case MINUSMINUS:
-    case NAMESPACE_NAME:
     case OPERATOR:
-    case PLUSPLUS:
-    case SHORT:
-    case SIGNED:
     case STRING:
-    case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
-    case UNSIGNED:
-    case VOID:
-    case WCHAR_T:
         if(cpp_parser_postfix_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -1725,13 +1827,27 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
-                    case OPERATOR:
-                    case TEMPLATE:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1789,13 +1905,430 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                     int current_i = token_i;
                     switch(GET_TOKEN_ID(tokens, token_i))
                     {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
                     case '~':
                     case CLASS_NAME:
                     case COLONCOLON:
-                    case IDENTIFIER:
                     case NAMESPACE_NAME:
+                    case TEMPLATE_NAME:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        token_i = current_i;
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case ENUM_NAME:
+                    case TYPEDEF_NAME:
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    default:
+                        REPORT_SWITCH_ERROR(tokens, token_i);
+                    }
+                }
+                break;
+
+            case MINUSMINUS:
+                if(cpp_parser_shift_token<MINUSMINUS>(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
+            case PLUSPLUS:
+                if(cpp_parser_shift_token<PLUSPLUS>(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
+            default:
+                REPORT_SWITCH_ERROR(tokens, token_i);
+            }
+        }
+
+        token_i = current_i;
+        if(cpp_parser_primary_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case BOOL:
+    case CHAR:
+    case DOUBLE:
+    case ENUM_NAME:
+    case FLOAT:
+    case INT:
+    case LONG:
+    case SHORT:
+    case SIGNED:
+    case TYPEDEF_NAME:
+    case UNSIGNED:
+    case VOID:
+    case WCHAR_T:
+        if(cpp_parser_postfix_expression(tokens, token_i, node1))
+        {
+            node_t node2;
+            switch(GET_TOKEN_ID(tokens, token_i))
+            {
+            case '(':
+                if(cpp_parser_shift_token<'('>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_expression_list_opt(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_shift_token<')'>(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case '.':
+                if(cpp_parser_shift_token<'.'>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    int current_i = token_i;
+                    switch(GET_TOKEN_ID(tokens, token_i))
+                    {
+                    case IDENTIFIER:
                     case OPERATOR:
                     case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
+                    case '~':
+                    case CLASS_NAME:
+                    case COLONCOLON:
+                    case NAMESPACE_NAME:
+                    case TEMPLATE_NAME:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        token_i = current_i;
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case ENUM_NAME:
+                    case TYPEDEF_NAME:
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    default:
+                        REPORT_SWITCH_ERROR(tokens, token_i);
+                    }
+                }
+                break;
+
+            case '[':
+                if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_expression(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_shift_token<']'>(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case ARROW:
+                if(cpp_parser_shift_token<ARROW>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    int current_i = token_i;
+                    switch(GET_TOKEN_ID(tokens, token_i))
+                    {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
+                    case '~':
+                    case CLASS_NAME:
+                    case COLONCOLON:
+                    case NAMESPACE_NAME:
+                    case TEMPLATE_NAME:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        token_i = current_i;
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case ENUM_NAME:
+                    case TYPEDEF_NAME:
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    default:
+                        REPORT_SWITCH_ERROR(tokens, token_i);
+                    }
+                }
+                break;
+
+            case MINUSMINUS:
+                if(cpp_parser_shift_token<MINUSMINUS>(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
+            case PLUSPLUS:
+                if(cpp_parser_shift_token<PLUSPLUS>(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
+            default:
+                REPORT_SWITCH_ERROR(tokens, token_i);
+            }
+        }
+
+        token_i = current_i;
+        if(cpp_parser_simple_type_specifier(tokens, token_i, node1))
+        {
+            node_t node2;
+            if(cpp_parser_shift_token<'('>(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_expression_list_opt(tokens, token_i, node3))
+                {
+                    node_t node4;
+                    if(cpp_parser_shift_token<')'>(tokens, token_i, node4))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        break;
+
+    case CLASS_NAME:
+    case COLONCOLON:
+    case NAMESPACE_NAME:
+    case TEMPLATE_NAME:
+        if(cpp_parser_postfix_expression(tokens, token_i, node1))
+        {
+            node_t node2;
+            switch(GET_TOKEN_ID(tokens, token_i))
+            {
+            case '(':
+                if(cpp_parser_shift_token<'('>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_expression_list_opt(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_shift_token<')'>(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case '.':
+                if(cpp_parser_shift_token<'.'>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    int current_i = token_i;
+                    switch(GET_TOKEN_ID(tokens, token_i))
+                    {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
+                    case '~':
+                    case CLASS_NAME:
+                    case COLONCOLON:
+                    case NAMESPACE_NAME:
+                    case TEMPLATE_NAME:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+
+                        token_i = current_i;
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    case ENUM_NAME:
+                    case TYPEDEF_NAME:
+                        if(cpp_parser_pseudo_destructor_name(tokens, token_i, node3))
+                        {
+                            return true;
+                        }
+                        break;
+
+                    default:
+                        REPORT_SWITCH_ERROR(tokens, token_i);
+                    }
+                }
+                break;
+
+            case '[':
+                if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_expression(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_shift_token<']'>(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                break;
+
+            case ARROW:
+                if(cpp_parser_shift_token<ARROW>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    int current_i = token_i;
+                    switch(GET_TOKEN_ID(tokens, token_i))
+                    {
+                    case IDENTIFIER:
+                    case OPERATOR:
+                    case TEMPLATE:
+                        if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
+                        {
+                            node_t node4;
+                            if(cpp_parser_COLONCOLON_opt(tokens, token_i, node4))
+                            {
+                                node_t node5;
+                                if(cpp_parser_id_expression(tokens, token_i, node5))
+                                {
+                                    return true;
+                                }
+                            }
+                        }
+                        break;
+
+                    case '~':
+                    case CLASS_NAME:
+                    case COLONCOLON:
+                    case NAMESPACE_NAME:
                     case TEMPLATE_NAME:
                         if(cpp_parser_TEMPLATE_opt(tokens, token_i, node3))
                         {
@@ -1894,26 +2427,12 @@ bool cpp_parser_expression_list(const token_t * tokens, int & token_i, node_t & 
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -1921,73 +2440,39 @@ bool cpp_parser_expression_list(const token_t * tokens, int & token_i, node_t & 
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_assignment_expression(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
-        if(cpp_parser_expression_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_assignment_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_expression_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -2093,12 +2578,6 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
                 return true;
             }
         }
-
-        token_i = current_i;
-        if(cpp_parser_postfix_expression(tokens, token_i, node1))
-        {
-            return true;
-        }
         break;
 
     case PLUSPLUS:
@@ -2109,12 +2588,6 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             {
                 return true;
             }
-        }
-
-        token_i = current_i;
-        if(cpp_parser_postfix_expression(tokens, token_i, node1))
-        {
-            return true;
         }
         break;
 
@@ -2151,10 +2624,7 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case '*':
             case '+':
             case '-':
-            case '.':
-            case '[':
             case '~':
-            case ARROW:
             case BOOL:
             case CHAR:
             case CHARACTER:
@@ -2164,7 +2634,6 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case DELETE:
             case DOUBLE:
             case DYNAMIC_CAST:
-            case ENUM_NAME:
             case FALSE:
             case FLOAT:
             case FLOATING:
@@ -2174,7 +2643,6 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case LONG:
             case MINUSMINUS:
             case NAMESPACE_NAME:
-            case NEW:
             case OPERATOR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
@@ -2186,7 +2654,6 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case TEMPLATE_NAME:
             case THIS:
             case TRUE:
-            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
@@ -2203,8 +2670,21 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
         }
         break;
 
-    case COLONCOLON:
     case DELETE:
+        if(cpp_parser_delete_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case NEW:
+        if(cpp_parser_new_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case COLONCOLON:
         if(cpp_parser_delete_expression(tokens, token_i, node1))
         {
             return true;
@@ -2223,18 +2703,7 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
         }
         break;
 
-    case NEW:
-        if(cpp_parser_new_expression(tokens, token_i, node1))
-        {
-            return true;
-        }
-        break;
-
     case '(':
-    case '.':
-    case '[':
-    case '~':
-    case ARROW:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -2265,6 +2734,13 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
+        if(cpp_parser_postfix_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case '~':
         if(cpp_parser_postfix_expression(tokens, token_i, node1))
         {
             return true;
@@ -2414,7 +2890,6 @@ bool cpp_parser_new_expression(const token_t * tokens, int & token_i, node_t & n
                 case ENUM:
                 case ENUM_NAME:
                 case FLOAT:
-                case IDENTIFIER:
                 case INT:
                 case LONG:
                 case NAMESPACE_NAME:
@@ -2619,7 +3094,6 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
         if(cpp_parser_shift_token<DELETE>(tokens, token_i, node2))
         {
             node_t node3;
-            int current_i = token_i;
             switch(GET_TOKEN_ID(tokens, token_i))
             {
             case '[':
@@ -2635,12 +3109,6 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
                         }
                     }
                 }
-
-                token_i = current_i;
-                if(cpp_parser_cast_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
                 break;
 
             case '!':
@@ -2649,9 +3117,7 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case '*':
             case '+':
             case '-':
-            case '.':
             case '~':
-            case ARROW:
             case BOOL:
             case CHAR:
             case CHARACTER:
@@ -2661,7 +3127,6 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case DELETE:
             case DOUBLE:
             case DYNAMIC_CAST:
-            case ENUM_NAME:
             case FALSE:
             case FLOAT:
             case FLOATING:
@@ -2671,7 +3136,6 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case LONG:
             case MINUSMINUS:
             case NAMESPACE_NAME:
-            case NEW:
             case OPERATOR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
@@ -2683,7 +3147,6 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case TEMPLATE_NAME:
             case THIS:
             case TRUE:
-            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
@@ -2744,10 +3207,7 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '[':
     case '~':
-    case ARROW:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -2757,7 +3217,6 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -2767,7 +3226,6 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -2779,7 +3237,6 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -2815,10 +3272,7 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '[':
     case '~':
-    case ARROW:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -2828,7 +3282,6 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -2838,7 +3291,6 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -2850,7 +3302,6 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -2861,41 +3312,6 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
         }
 
         token_i = current_i;
-        if(cpp_parser_pm_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            switch(GET_TOKEN_ID(tokens, token_i))
-            {
-            case ARROWSTAR:
-                if(cpp_parser_shift_token<ARROWSTAR>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_cast_expression(tokens, token_i, node3))
-                    {
-                        return true;
-                    }
-                }
-                break;
-
-            case DOTSTAR:
-                if(cpp_parser_shift_token<DOTSTAR>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_cast_expression(tokens, token_i, node3))
-                    {
-                        return true;
-                    }
-                }
-                break;
-
-            default:
-                REPORT_SWITCH_ERROR(tokens, token_i);
-            }
-        }
-        break;
-
-    case ARROWSTAR:
-    case DOTSTAR:
         if(cpp_parser_pm_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -2950,18 +3366,12 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -2969,10 +3379,8 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -2982,7 +3390,6 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -2994,7 +3401,6 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3069,18 +3475,12 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3088,10 +3488,8 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3101,7 +3499,6 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3113,7 +3510,6 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3177,18 +3573,12 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3196,10 +3586,8 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3209,7 +3597,6 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3221,7 +3608,6 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3232,41 +3618,6 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
         }
 
         token_i = current_i;
-        if(cpp_parser_shift_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            switch(GET_TOKEN_ID(tokens, token_i))
-            {
-            case SL:
-                if(cpp_parser_shift_token<SL>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_additive_expression(tokens, token_i, node3))
-                    {
-                        return true;
-                    }
-                }
-                break;
-
-            case SR:
-                if(cpp_parser_shift_token<SR>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_additive_expression(tokens, token_i, node3))
-                    {
-                        return true;
-                    }
-                }
-                break;
-
-            default:
-                REPORT_SWITCH_ERROR(tokens, token_i);
-            }
-        }
-        break;
-
-    case SL:
-    case SR:
         if(cpp_parser_shift_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -3322,20 +3673,12 @@ bool cpp_parser_relational_expression(const token_t * tokens, int & token_i, nod
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3343,36 +3686,28 @@ bool cpp_parser_relational_expression(const token_t * tokens, int & token_i, nod
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3458,20 +3793,12 @@ bool cpp_parser_equality_expression(const token_t * tokens, int & token_i, node_
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3479,38 +3806,28 @@ bool cpp_parser_equality_expression(const token_t * tokens, int & token_i, node_
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3573,20 +3890,12 @@ bool cpp_parser_and_expression(const token_t * tokens, int & token_i, node_t & n
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3594,38 +3903,28 @@ bool cpp_parser_and_expression(const token_t * tokens, int & token_i, node_t & n
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3669,20 +3968,12 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3690,38 +3981,28 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3732,21 +4013,6 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
         }
 
         token_i = current_i;
-        if(cpp_parser_exclusive_or_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<'^'>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_and_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case '^':
         if(cpp_parser_exclusive_or_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -3780,21 +4046,12 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
-    case '^':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3802,38 +4059,28 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3844,21 +4091,6 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
         }
 
         token_i = current_i;
-        if(cpp_parser_inclusive_or_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<'|'>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_exclusive_or_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case '|':
         if(cpp_parser_inclusive_or_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -3892,22 +4124,12 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -3915,38 +4137,28 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3957,21 +4169,6 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
         }
 
         token_i = current_i;
-        if(cpp_parser_logical_and_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<ANDAND>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_inclusive_or_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ANDAND:
         if(cpp_parser_logical_and_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -4005,23 +4202,12 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ANDAND:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -4029,38 +4215,28 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4071,21 +4247,6 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
         }
 
         token_i = current_i;
-        if(cpp_parser_logical_or_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<OROR>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_logical_and_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case OROR:
         if(cpp_parser_logical_or_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -4118,21 +4279,33 @@ bool cpp_parser_conditional_expression(const token_t * tokens, int & token_i, no
     if(cpp_parser_logical_or_expression(tokens, token_i, node1))
     {
         node_t node2;
-        if(cpp_parser_shift_token<'?'>(tokens, token_i, node2))
+        switch(GET_TOKEN_ID(tokens, token_i))
         {
-            node_t node3;
-            if(cpp_parser_expression(tokens, token_i, node3))
+        default:
+            if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
             {
-                node_t node4;
-                if(cpp_parser_shift_token<':'>(tokens, token_i, node4))
+                return true;
+            }
+            break;
+
+        case '?':
+            if(cpp_parser_shift_token<'?'>(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_expression(tokens, token_i, node3))
                 {
-                    node_t node5;
-                    if(cpp_parser_assignment_expression(tokens, token_i, node5))
+                    node_t node4;
+                    if(cpp_parser_shift_token<':'>(tokens, token_i, node4))
                     {
-                        return true;
+                        node_t node5;
+                        if(cpp_parser_assignment_expression(tokens, token_i, node5))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
+            break;
         }
     }
     return false;
@@ -4152,23 +4325,12 @@ bool cpp_parser_assignment_expression(const token_t * tokens, int & token_i, nod
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ANDAND:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -4176,39 +4338,28 @@ bool cpp_parser_assignment_expression(const token_t * tokens, int & token_i, nod
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4362,26 +4513,12 @@ bool cpp_parser_expression(const token_t * tokens, int & token_i, node_t & node)
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -4389,73 +4526,39 @@ bool cpp_parser_expression(const token_t * tokens, int & token_i, node_t & node)
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_assignment_expression(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
-        if(cpp_parser_expression(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_assignment_expression(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_expression(tokens, token_i, node1))
         {
             node_t node2;
@@ -4516,53 +4619,27 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
         }
         break;
 
+    case ASM:
+    case ENUM_NAME:
+    case NAMESPACE:
+    case TYPEDEF_NAME:
+    case USING:
+        if(cpp_parser_declaration_statement(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
     case '&':
     case '(':
     case '*':
-    case ',':
     case ';':
-    case '[':
     case '~':
-    case ASM:
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
-    case ENUM_NAME:
-    case EXPLICIT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
-    case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
-    case NAMESPACE:
     case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
-    case TEMPLATE:
     case TEMPLATE_NAME:
-    case TYPEDEF:
-    case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
-    case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_declaration_statement(tokens, token_i, node1))
         {
             return true;
@@ -4573,64 +4650,39 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
         {
             return true;
         }
-
-        token_i = current_i;
-        if(cpp_parser_labeled_statement(tokens, token_i, node1))
-        {
-            return true;
-        }
         break;
 
     case '!':
-    case '%':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '^':
-    case '|':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
+    case BOOL:
+    case CHAR:
     case CHARACTER:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
+    case DOUBLE:
     case DYNAMIC_CAST:
-    case EQ:
     case FALSE:
+    case FLOAT:
     case FLOATING:
-    case GTEQ:
+    case INT:
     case INTEGER:
-    case LTEQ:
+    case LONG:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case NEW:
-    case NOTEQ:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
+    case SHORT:
+    case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case THIS:
     case THROW:
     case TRUE:
     case TYPEID:
-    case XOREQ:
+    case UNSIGNED:
+    case VOID:
+    case WCHAR_T:
         if(cpp_parser_expression_statement(tokens, token_i, node1))
         {
             return true;
@@ -4651,6 +4703,25 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
     case GOTO:
     case RETURN:
         if(cpp_parser_jump_statement(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case IDENTIFIER:
+        if(cpp_parser_declaration_statement(tokens, token_i, node1))
+        {
+            return true;
+        }
+
+        token_i = current_i;
+        if(cpp_parser_expression_statement(tokens, token_i, node1))
+        {
+            return true;
+        }
+
+        token_i = current_i;
+        if(cpp_parser_labeled_statement(tokens, token_i, node1))
         {
             return true;
         }
@@ -4807,116 +4878,64 @@ bool cpp_parser_statement_seq(const token_t * tokens, int & token_i, node_t & no
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case ':':
     case ';':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
     case '{':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case ASM:
-    case AUTO:
     case BOOL:
     case BREAK:
     case CASE:
     case CHAR:
     case CHARACTER:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
     case CONST_CAST:
     case CONTINUE:
     case DEFAULT:
-    case DELETE:
-    case DIVEQ:
     case DO:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM:
     case ENUM_NAME:
-    case EQ:
-    case EXPLICIT:
-    case EXTERN:
     case FALSE:
     case FLOAT:
     case FLOATING:
     case FOR:
-    case FRIEND:
     case GOTO:
-    case GTEQ:
     case IDENTIFIER:
     case IF:
-    case INLINE:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case MUTABLE:
     case NAMESPACE:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
-    case REGISTER:
     case REINTERPRET_CAST:
     case RETURN:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
-    case STATIC:
     case STATIC_CAST:
     case STRING:
-    case STRUCT:
-    case SUBEQ:
     case SWITCH:
-    case TEMPLATE:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
     case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
     case TYPEID:
-    case TYPENAME:
-    case UNION:
     case UNSIGNED:
     case USING:
-    case VIRTUAL:
     case VOID:
-    case VOLATILE:
     case WCHAR_T:
     case WHILE:
-    case XOREQ:
         if(cpp_parser_statement(tokens, token_i, node1))
         {
             return true;
@@ -4967,13 +4986,25 @@ bool cpp_parser_selection_statement(const token_t * tokens, int & token_i, node_
                         if(cpp_parser_statement(tokens, token_i, node5))
                         {
                             node_t node6;
-                            if(cpp_parser_shift_token<ELSE>(tokens, token_i, node6))
+                            switch(GET_TOKEN_ID(tokens, token_i))
                             {
-                                node_t node7;
-                                if(cpp_parser_statement(tokens, token_i, node7))
+                            default:
+                                if(cpp_parser_shift_EMPTY(tokens, token_i, node6))
                                 {
                                     return true;
                                 }
+                                break;
+
+                            case ELSE:
+                                if(cpp_parser_shift_token<ELSE>(tokens, token_i, node6))
+                                {
+                                    node_t node7;
+                                    if(cpp_parser_statement(tokens, token_i, node7))
+                                    {
+                                        return true;
+                                    }
+                                }
+                                break;
                             }
                         }
                     }
@@ -5024,80 +5055,52 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
-    case BOOL:
-    case CHAR:
     case CHARACTER:
-    case CLASS_NAME:
-    case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
-    case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
-    case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
-    case INT:
     case INTEGER:
-    case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
-    case SHORT:
-    case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
-    case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
+        if(cpp_parser_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case BOOL:
+    case CHAR:
+    case CLASS_NAME:
+    case COLONCOLON:
+    case DOUBLE:
+    case FLOAT:
+    case INT:
+    case LONG:
+    case NAMESPACE_NAME:
+    case SHORT:
+    case SIGNED:
+    case TEMPLATE_NAME:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_expression(tokens, token_i, node1))
         {
             return true;
@@ -5125,7 +5128,9 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     case CLASS:
     case CONST:
     case ENUM:
+    case ENUM_NAME:
     case STRUCT:
+    case TYPEDEF_NAME:
     case TYPENAME:
     case UNION:
     case VOLATILE:
@@ -5273,81 +5278,53 @@ bool cpp_parser_for_init_statement(const token_t * tokens, int & token_i, node_t
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
-    case '&':
-    case '(':
-    case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case ';':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
-    case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
-    case CLASS_NAME:
-    case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
-    case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
-    case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
-    case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
+        if(cpp_parser_expression_statement(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case '&':
+    case '(':
+    case '*':
+    case ';':
+    case '~':
+    case CLASS_NAME:
+    case COLONCOLON:
+    case IDENTIFIER:
+    case NAMESPACE_NAME:
+    case OPERATOR:
+    case TEMPLATE_NAME:
         if(cpp_parser_expression_statement(tokens, token_i, node1))
         {
             return true;
@@ -5360,24 +5337,8 @@ bool cpp_parser_for_init_statement(const token_t * tokens, int & token_i, node_t
         }
         break;
 
-    case AUTO:
-    case CLASS:
-    case CONST:
-    case ENUM:
-    case EXPLICIT:
-    case EXTERN:
-    case FRIEND:
-    case INLINE:
-    case MUTABLE:
-    case REGISTER:
-    case STATIC:
-    case STRUCT:
-    case TEMPLATE:
-    case TYPEDEF:
-    case TYPENAME:
-    case UNION:
-    case VIRTUAL:
-    case VOLATILE:
+    case ENUM_NAME:
+    case TYPEDEF_NAME:
         if(cpp_parser_simple_declaration(tokens, token_i, node1))
         {
             return true;
@@ -5491,54 +5452,22 @@ bool cpp_parser_declaration_seq(const token_t * tokens, int & token_i, node_t & 
     case '&':
     case '(':
     case '*':
-    case ',':
-    case ':':
     case ';':
-    case '[':
-    case '{':
     case '~':
     case ASM:
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
     case EXPORT:
     case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
     case NAMESPACE:
     case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
     case TEMPLATE:
     case TEMPLATE_NAME:
-    case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
     case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_declaration(tokens, token_i, node1))
         {
             return true;
@@ -5578,66 +5507,28 @@ bool cpp_parser_declaration(const token_t * tokens, int & token_i, node_t & node
     int current_i = token_i;
     switch(GET_TOKEN_ID(tokens, token_i))
     {
-    case '&':
-    case '(':
-    case '*':
-    case ',':
     case ';':
-    case '[':
-    case '~':
     case ASM:
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
-    case CLASS_NAME:
-    case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
-    case ENUM_NAME:
-    case EXPLICIT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
-    case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
-    case NAMESPACE:
-    case NAMESPACE_NAME:
-    case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
-    case TEMPLATE:
-    case TEMPLATE_NAME:
-    case TYPEDEF:
-    case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
     case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_block_declaration(tokens, token_i, node1))
         {
             return true;
         }
+        break;
 
-        token_i = current_i;
-        if(cpp_parser_explicit_instantiation(tokens, token_i, node1))
-        {
-            return true;
-        }
-
-        token_i = current_i;
-        if(cpp_parser_explicit_specialization(tokens, token_i, node1))
+    case '&':
+    case '(':
+    case '*':
+    case '~':
+    case CLASS_NAME:
+    case COLONCOLON:
+    case ENUM_NAME:
+    case IDENTIFIER:
+    case NAMESPACE_NAME:
+    case OPERATOR:
+    case TEMPLATE_NAME:
+    case TYPEDEF_NAME:
+        if(cpp_parser_block_declaration(tokens, token_i, node1))
         {
             return true;
         }
@@ -5647,15 +5538,36 @@ bool cpp_parser_declaration(const token_t * tokens, int & token_i, node_t & node
         {
             return true;
         }
+        break;
 
-        token_i = current_i;
+    case EXTERN:
         if(cpp_parser_linkage_specification(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case NAMESPACE:
+        if(cpp_parser_block_declaration(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
         if(cpp_parser_namespace_definition(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case TEMPLATE:
+        if(cpp_parser_explicit_instantiation(tokens, token_i, node1))
+        {
+            return true;
+        }
+
+        token_i = current_i;
+        if(cpp_parser_explicit_specialization(tokens, token_i, node1))
         {
             return true;
         }
@@ -5712,47 +5624,16 @@ bool cpp_parser_block_declaration(const token_t * tokens, int & token_i, node_t 
     case '&':
     case '(':
     case '*':
-    case ',':
     case ';':
-    case '[':
     case '~':
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
     case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
-    case TEMPLATE:
     case TEMPLATE_NAME:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_simple_declaration(tokens, token_i, node1))
         {
             return true;
@@ -5859,7 +5740,6 @@ bool cpp_parser_decl_specifier(const token_t * tokens, int & token_i, node_t & n
     case ENUM:
     case ENUM_NAME:
     case FLOAT:
-    case IDENTIFIER:
     case INT:
     case LONG:
     case NAMESPACE_NAME:
@@ -6014,6 +5894,14 @@ bool cpp_parser_type_specifier(const token_t * tokens, int & token_i, node_t & n
     int current_i = token_i;
     switch(GET_TOKEN_ID(tokens, token_i))
     {
+    case CONST:
+    case VOLATILE:
+        if(cpp_parser_cv_qualifier(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
     case CLASS:
     case STRUCT:
     case UNION:
@@ -6029,16 +5917,14 @@ bool cpp_parser_type_specifier(const token_t * tokens, int & token_i, node_t & n
         }
         break;
 
-    case CONST:
-    case VOLATILE:
-        if(cpp_parser_cv_qualifier(tokens, token_i, node1))
+    case TYPENAME:
+        if(cpp_parser_elaborated_type_specifier(tokens, token_i, node1))
         {
             return true;
         }
         break;
 
     case ENUM:
-    case TYPENAME:
         if(cpp_parser_elaborated_type_specifier(tokens, token_i, node1))
         {
             return true;
@@ -6289,17 +6175,29 @@ bool cpp_parser_elaborated_type_specifier(const token_t * tokens, int & token_i,
                     if(cpp_parser_identifier(tokens, token_i, node4))
                     {
                         node_t node5;
-                        if(cpp_parser_shift_token<'<'>(tokens, token_i, node5))
+                        switch(GET_TOKEN_ID(tokens, token_i))
                         {
-                            node_t node6;
-                            if(cpp_parser_template_argument_list(tokens, token_i, node6))
+                        default:
+                            if(cpp_parser_shift_EMPTY(tokens, token_i, node5))
                             {
-                                node_t node7;
-                                if(cpp_parser_shift_token<'>'>(tokens, token_i, node7))
+                                return true;
+                            }
+                            break;
+
+                        case '<':
+                            if(cpp_parser_shift_token<'<'>(tokens, token_i, node5))
+                            {
+                                node_t node6;
+                                if(cpp_parser_template_argument_list(tokens, token_i, node6))
                                 {
-                                    return true;
+                                    node_t node7;
+                                    if(cpp_parser_shift_token<'>'>(tokens, token_i, node7))
+                                    {
+                                        return true;
+                                    }
                                 }
                             }
+                            break;
                         }
                     }
                 }
@@ -6398,21 +6296,6 @@ bool cpp_parser_enumerator_list(const token_t * tokens, int & token_i, node_t & 
         }
         break;
 
-    case ',':
-        if(cpp_parser_enumerator_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_enumerator_definition(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
     default:
         REPORT_SWITCH_ERROR(tokens, token_i);
     }
@@ -6431,13 +6314,25 @@ bool cpp_parser_enumerator_definition(const token_t * tokens, int & token_i, nod
     if(cpp_parser_enumerator(tokens, token_i, node1))
     {
         node_t node2;
-        if(cpp_parser_shift_token<'='>(tokens, token_i, node2))
+        switch(GET_TOKEN_ID(tokens, token_i))
         {
-            node_t node3;
-            if(cpp_parser_constant_expression(tokens, token_i, node3))
+        default:
+            if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
             {
                 return true;
             }
+            break;
+
+        case '=':
+            if(cpp_parser_shift_token<'='>(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_constant_expression(tokens, token_i, node3))
+                {
+                    return true;
+                }
+            }
+            break;
         }
     }
     return false;
@@ -6844,7 +6739,6 @@ bool cpp_parser_linkage_specification(const token_t * tokens, int & token_i, nod
         if(cpp_parser_string_literal(tokens, token_i, node2))
         {
             node_t node3;
-            int current_i = token_i;
             switch(GET_TOKEN_ID(tokens, token_i))
             {
             case '{':
@@ -6860,64 +6754,27 @@ bool cpp_parser_linkage_specification(const token_t * tokens, int & token_i, nod
                         }
                     }
                 }
-
-                token_i = current_i;
-                if(cpp_parser_declaration(tokens, token_i, node3))
-                {
-                    return true;
-                }
                 break;
 
             case '&':
             case '(':
             case '*':
-            case ',':
-            case ':':
             case ';':
-            case '[':
             case '~':
             case ASM:
-            case AUTO:
-            case BOOL:
-            case CHAR:
-            case CLASS:
             case CLASS_NAME:
             case COLONCOLON:
-            case CONST:
-            case DOUBLE:
-            case ENUM:
             case ENUM_NAME:
-            case EXPLICIT:
             case EXPORT:
             case EXTERN:
-            case FLOAT:
-            case FRIEND:
             case IDENTIFIER:
-            case INLINE:
-            case INT:
-            case LONG:
-            case MUTABLE:
             case NAMESPACE:
             case NAMESPACE_NAME:
             case OPERATOR:
-            case REGISTER:
-            case SHORT:
-            case SIGNED:
-            case STATIC:
-            case STRUCT:
             case TEMPLATE:
             case TEMPLATE_NAME:
-            case TRY:
-            case TYPEDEF:
             case TYPEDEF_NAME:
-            case TYPENAME:
-            case UNION:
-            case UNSIGNED:
             case USING:
-            case VIRTUAL:
-            case VOID:
-            case VOLATILE:
-            case WCHAR_T:
                 if(cpp_parser_declaration(tokens, token_i, node3))
                 {
                     return true;
@@ -6947,7 +6804,6 @@ bool cpp_parser_init_declarator_list(const token_t * tokens, int & token_i, node
     case '&':
     case '(':
     case '*':
-    case '[':
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
@@ -6963,21 +6819,6 @@ bool cpp_parser_init_declarator_list(const token_t * tokens, int & token_i, node
         }
 
         token_i = current_i;
-        if(cpp_parser_init_declarator_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_init_declarator(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_init_declarator_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -7030,16 +6871,21 @@ bool cpp_parser_declarator(const token_t * tokens, int & token_i, node_t & node)
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '(':
-    case '[':
     case '~':
-    case CLASS_NAME:
-    case COLONCOLON:
     case ENUM_NAME:
     case IDENTIFIER:
-    case NAMESPACE_NAME:
     case OPERATOR:
-    case TEMPLATE_NAME:
     case TYPEDEF_NAME:
+        if(cpp_parser_direct_declarator(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case CLASS_NAME:
+    case COLONCOLON:
+    case NAMESPACE_NAME:
+    case TEMPLATE_NAME:
         if(cpp_parser_direct_declarator(tokens, token_i, node1))
         {
             return true;
@@ -7167,56 +7013,6 @@ bool cpp_parser_direct_declarator(const token_t * tokens, int & token_i, node_t 
         }
 
         token_i = current_i;
-        if(cpp_parser_direct_declarator(tokens, token_i, node1))
-        {
-            node_t node2;
-            switch(GET_TOKEN_ID(tokens, token_i))
-            {
-            case '(':
-                if(cpp_parser_shift_token<'('>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_parameter_declaration_clause(tokens, token_i, node3))
-                    {
-                        node_t node4;
-                        if(cpp_parser_shift_token<')'>(tokens, token_i, node4))
-                        {
-                            node_t node5;
-                            if(cpp_parser_cv_qualifier_seq_opt(tokens, token_i, node5))
-                            {
-                                node_t node6;
-                                if(cpp_parser_exception_specification_opt(tokens, token_i, node6))
-                                {
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-                }
-                break;
-
-            case '[':
-                if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
-                {
-                    node_t node3;
-                    if(cpp_parser_constant_expression_opt(tokens, token_i, node3))
-                    {
-                        node_t node4;
-                        if(cpp_parser_shift_token<']'>(tokens, token_i, node4))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                break;
-
-            default:
-                REPORT_SWITCH_ERROR(tokens, token_i);
-            }
-        }
-        break;
-
-    case '[':
         if(cpp_parser_direct_declarator(tokens, token_i, node1))
         {
             node_t node2;
@@ -7396,10 +7192,16 @@ bool cpp_parser_declarator_id(const token_t * tokens, int & token_i, node_t & no
         switch(GET_TOKEN_ID(tokens, token_i))
         {
         case '~':
-        case CLASS_NAME:
         case IDENTIFIER:
-        case NAMESPACE_NAME:
         case OPERATOR:
+            if(cpp_parser_id_expression(tokens, token_i, node2))
+            {
+                return true;
+            }
+            break;
+
+        case CLASS_NAME:
+        case NAMESPACE_NAME:
         case TEMPLATE_NAME:
             if(cpp_parser_id_expression(tokens, token_i, node2))
             {
@@ -7660,7 +7462,6 @@ bool cpp_parser_parameter_declaration_clause(const token_t * tokens, int & token
     int current_i = token_i;
     switch(GET_TOKEN_ID(tokens, token_i))
     {
-    case ',':
     case AUTO:
     case BOOL:
     case CHAR:
@@ -7675,7 +7476,6 @@ bool cpp_parser_parameter_declaration_clause(const token_t * tokens, int & token
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -7720,6 +7520,7 @@ bool cpp_parser_parameter_declaration_clause(const token_t * tokens, int & token
         }
         break;
 
+    default:
     case ELLIPSIS:
         if(cpp_parser_parameter_declaration_list_opt(tokens, token_i, node1))
         {
@@ -7730,9 +7531,6 @@ bool cpp_parser_parameter_declaration_clause(const token_t * tokens, int & token
             }
         }
         break;
-
-    default:
-        REPORT_SWITCH_ERROR(tokens, token_i);
     }
     return false;
 }
@@ -7763,7 +7561,6 @@ bool cpp_parser_parameter_declaration_list(const token_t * tokens, int & token_i
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -7804,21 +7601,6 @@ bool cpp_parser_parameter_declaration_list(const token_t * tokens, int & token_i
         }
         break;
 
-    case ',':
-        if(cpp_parser_parameter_declaration_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_parameter_declaration(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
     default:
         REPORT_SWITCH_ERROR(tokens, token_i);
     }
@@ -7842,11 +7624,38 @@ bool cpp_parser_parameter_declaration(const token_t * tokens, int & token_i, nod
         int current_i = token_i;
         switch(GET_TOKEN_ID(tokens, token_i))
         {
+        default:
+        case '=':
+        case '[':
+            if(cpp_parser_abstract_declarator_opt(tokens, token_i, node2))
+            {
+                node_t node3;
+                switch(GET_TOKEN_ID(tokens, token_i))
+                {
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
+                    {
+                        return true;
+                    }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
+                }
+            }
+            break;
+
         case '&':
         case '(':
         case '*':
-        case '=':
-        case '[':
         case CLASS_NAME:
         case COLONCOLON:
         case NAMESPACE_NAME:
@@ -7854,13 +7663,25 @@ bool cpp_parser_parameter_declaration(const token_t * tokens, int & token_i, nod
             if(cpp_parser_abstract_declarator_opt(tokens, token_i, node2))
             {
                 node_t node3;
-                if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                switch(GET_TOKEN_ID(tokens, token_i))
                 {
-                    node_t node4;
-                    if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
                     {
                         return true;
                     }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
                 }
             }
 
@@ -7868,13 +7689,25 @@ bool cpp_parser_parameter_declaration(const token_t * tokens, int & token_i, nod
             if(cpp_parser_declarator(tokens, token_i, node2))
             {
                 node_t node3;
-                if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                switch(GET_TOKEN_ID(tokens, token_i))
                 {
-                    node_t node4;
-                    if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
                     {
                         return true;
                     }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
                 }
             }
             break;
@@ -7887,19 +7720,28 @@ bool cpp_parser_parameter_declaration(const token_t * tokens, int & token_i, nod
             if(cpp_parser_declarator(tokens, token_i, node2))
             {
                 node_t node3;
-                if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                switch(GET_TOKEN_ID(tokens, token_i))
                 {
-                    node_t node4;
-                    if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
                     {
                         return true;
                     }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_assignment_expression(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
                 }
             }
             break;
-
-        default:
-            REPORT_SWITCH_ERROR(tokens, token_i);
         }
     }
     return false;
@@ -8033,28 +7875,13 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
                 break;
 
             case '!':
-            case '%':
             case '&':
             case '(':
             case '*':
             case '+':
-            case ',':
             case '-':
-            case '.':
-            case '/':
-            case '<':
-            case '=':
-            case '>':
-            case '[':
-            case '^':
             case '{':
-            case '|':
             case '~':
-            case ADDEQ:
-            case ANDAND:
-            case ANDEQ:
-            case ARROW:
-            case ARROWSTAR:
             case BOOL:
             case CHAR:
             case CHARACTER:
@@ -8062,52 +7889,33 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
             case COLONCOLON:
             case CONST_CAST:
             case DELETE:
-            case DIVEQ:
-            case DOTSTAR:
             case DOUBLE:
             case DYNAMIC_CAST:
-            case ENUM_NAME:
-            case EQ:
             case FALSE:
             case FLOAT:
             case FLOATING:
-            case GTEQ:
             case IDENTIFIER:
             case INT:
             case INTEGER:
             case LONG:
-            case LTEQ:
             case MINUSMINUS:
-            case MODEQ:
-            case MULEQ:
             case NAMESPACE_NAME:
-            case NEW:
-            case NOTEQ:
             case OPERATOR:
-            case OREQ:
-            case OROR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
             case SHORT:
             case SIGNED:
             case SIZEOF:
-            case SL:
-            case SLEQ:
-            case SR:
-            case SREQ:
             case STATIC_CAST:
             case STRING:
-            case SUBEQ:
             case TEMPLATE_NAME:
             case THIS:
             case THROW:
             case TRUE:
-            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
             case WCHAR_T:
-            case XOREQ:
                 if(cpp_parser_initializer_list(tokens, token_i, node2))
                 {
                     node_t node3;
@@ -8129,26 +7937,12 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -8156,52 +7950,33 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_assignment_expression(tokens, token_i, node1))
         {
             return true;
@@ -8227,27 +8002,13 @@ bool cpp_parser_initializer_list(const token_t * tokens, int & token_i, node_t &
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
     case '{':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -8255,73 +8016,39 @@ bool cpp_parser_initializer_list(const token_t * tokens, int & token_i, node_t &
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_initializer_clause(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
-        if(cpp_parser_initializer_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_initializer_clause(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_initializer_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -8383,6 +8110,7 @@ bool cpp_parser_class_head(const token_t * tokens, int & token_i, node_t & node)
         node_t node2;
         switch(GET_TOKEN_ID(tokens, token_i))
         {
+        default:
         case ':':
         case IDENTIFIER:
             if(cpp_parser_identifier_opt(tokens, token_i, node2))
@@ -8411,9 +8139,6 @@ bool cpp_parser_class_head(const token_t * tokens, int & token_i, node_t & node)
                 }
             }
             break;
-
-        default:
-            REPORT_SWITCH_ERROR(tokens, token_i);
         }
     }
     return false;
@@ -8489,52 +8214,20 @@ bool cpp_parser_member_specification(const token_t * tokens, int & token_i, node
     case '&':
     case '(':
     case '*':
-    case ',':
     case ':':
     case ';':
-    case '[':
-    case '{':
     case '~':
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
     case EXPORT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
     case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
     case TEMPLATE:
     case TEMPLATE_NAME:
-    case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
     case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_member_declaration(tokens, token_i, node1))
         {
             node_t node2;
@@ -8566,51 +8259,58 @@ bool cpp_parser_member_declaration(const token_t * tokens, int & token_i, node_t
     int current_i = token_i;
     switch(GET_TOKEN_ID(tokens, token_i))
     {
+    case ':':
+    case ';':
+        if(cpp_parser_decl_specifier_seq_opt(tokens, token_i, node1))
+        {
+            node_t node2;
+            if(cpp_parser_member_declarator_list_opt(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_shift_token<';'>(tokens, token_i, node3))
+                {
+                    return true;
+                }
+            }
+        }
+        break;
+
     case '&':
     case '(':
     case '*':
-    case ',':
-    case ':':
-    case ';':
-    case '[':
     case '~':
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
-    case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
-    case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
-    case TEMPLATE:
-    case TEMPLATE_NAME:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
+        if(cpp_parser_decl_specifier_seq_opt(tokens, token_i, node1))
+        {
+            node_t node2;
+            if(cpp_parser_member_declarator_list_opt(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_shift_token<';'>(tokens, token_i, node3))
+                {
+                    return true;
+                }
+            }
+        }
+
+        token_i = current_i;
+        if(cpp_parser_function_definition(tokens, token_i, node1))
+        {
+            node_t node2;
+            if(cpp_parser_SEMICOLON_opt(tokens, token_i, node2))
+            {
+                return true;
+            }
+        }
+        break;
+
+    case CLASS_NAME:
+    case NAMESPACE_NAME:
+    case TEMPLATE_NAME:
         if(cpp_parser_decl_specifier_seq_opt(tokens, token_i, node1))
         {
             node_t node2;
@@ -8643,15 +8343,10 @@ bool cpp_parser_member_declaration(const token_t * tokens, int & token_i, node_t
                 return true;
             }
         }
-
-        token_i = current_i;
-        if(cpp_parser_template_declaration(tokens, token_i, node1))
-        {
-            return true;
-        }
         break;
 
     case EXPORT:
+    case TEMPLATE:
         if(cpp_parser_template_declaration(tokens, token_i, node1))
         {
             return true;
@@ -8687,7 +8382,6 @@ bool cpp_parser_member_declarator_list(const token_t * tokens, int & token_i, no
     case '(':
     case '*':
     case ':':
-    case '[':
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
@@ -8703,21 +8397,6 @@ bool cpp_parser_member_declarator_list(const token_t * tokens, int & token_i, no
         }
 
         token_i = current_i;
-        if(cpp_parser_member_declarator_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_member_declarator(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_member_declarator_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -8754,12 +8433,10 @@ bool cpp_parser_member_declarator(const token_t * tokens, int & token_i, node_t 
     case '&':
     case '(':
     case '*':
-    case '[':
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
     case ENUM_NAME:
-    case IDENTIFIER:
     case NAMESPACE_NAME:
     case OPERATOR:
     case TEMPLATE_NAME:
@@ -8770,6 +8447,7 @@ bool cpp_parser_member_declarator(const token_t * tokens, int & token_i, node_t 
             int current_i = token_i;
             switch(GET_TOKEN_ID(tokens, token_i))
             {
+            default:
             case '=':
                 if(cpp_parser_constant_initializer_opt(tokens, token_i, node2))
                 {
@@ -8782,9 +8460,30 @@ bool cpp_parser_member_declarator(const token_t * tokens, int & token_i, node_t 
                     return true;
                 }
                 break;
+            }
+        }
+        break;
 
+    case IDENTIFIER:
+        if(cpp_parser_declarator(tokens, token_i, node1))
+        {
+            node_t node2;
+            int current_i = token_i;
+            switch(GET_TOKEN_ID(tokens, token_i))
+            {
             default:
-                REPORT_SWITCH_ERROR(tokens, token_i);
+            case '=':
+                if(cpp_parser_constant_initializer_opt(tokens, token_i, node2))
+                {
+                    return true;
+                }
+
+                token_i = current_i;
+                if(cpp_parser_pure_specifier_opt(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
             }
         }
 
@@ -8907,21 +8606,6 @@ bool cpp_parser_base_specifier_list(const token_t * tokens, int & token_i, node_
         }
 
         token_i = current_i;
-        if(cpp_parser_base_specifier_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_base_specifier(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_base_specifier_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -9153,13 +8837,25 @@ bool cpp_parser_mem_initializer_list(const token_t * tokens, int & token_i, node
     if(cpp_parser_mem_initializer(tokens, token_i, node1))
     {
         node_t node2;
-        if(cpp_parser_shift_token<','>(tokens, token_i, node2))
+        switch(GET_TOKEN_ID(tokens, token_i))
         {
-            node_t node3;
-            if(cpp_parser_mem_initializer_list(tokens, token_i, node3))
+        default:
+            if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
             {
                 return true;
             }
+            break;
+
+        case ',':
+            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
+            {
+                node_t node3;
+                if(cpp_parser_mem_initializer_list(tokens, token_i, node3))
+                {
+                    return true;
+                }
+            }
+            break;
         }
     }
     return false;
@@ -9463,13 +9159,25 @@ bool cpp_parser_operator(const token_t * tokens, int & token_i, node_t & node)
         if(cpp_parser_shift_token<DELETE>(tokens, token_i, node1))
         {
             node_t node2;
-            if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+            switch(GET_TOKEN_ID(tokens, token_i))
             {
-                node_t node3;
-                if(cpp_parser_shift_token<']'>(tokens, token_i, node3))
+            default:
+                if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
                 {
                     return true;
                 }
+                break;
+
+            case '[':
+                if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_shift_token<']'>(tokens, token_i, node3))
+                    {
+                        return true;
+                    }
+                }
+                break;
             }
         }
         break;
@@ -9527,13 +9235,25 @@ bool cpp_parser_operator(const token_t * tokens, int & token_i, node_t & node)
         if(cpp_parser_shift_token<NEW>(tokens, token_i, node1))
         {
             node_t node2;
-            if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+            switch(GET_TOKEN_ID(tokens, token_i))
             {
-                node_t node3;
-                if(cpp_parser_shift_token<']'>(tokens, token_i, node3))
+            default:
+                if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
                 {
                     return true;
                 }
+                break;
+
+            case '[':
+                if(cpp_parser_shift_token<'['>(tokens, token_i, node2))
+                {
+                    node_t node3;
+                    if(cpp_parser_shift_token<']'>(tokens, token_i, node3))
+                    {
+                        return true;
+                    }
+                }
+                break;
             }
         }
         break;
@@ -9675,7 +9395,6 @@ bool cpp_parser_template_parameter_list(const token_t * tokens, int & token_i, n
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -9717,21 +9436,6 @@ bool cpp_parser_template_parameter_list(const token_t * tokens, int & token_i, n
         }
         break;
 
-    case ',':
-        if(cpp_parser_template_parameter_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_template_parameter(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
     default:
         REPORT_SWITCH_ERROR(tokens, token_i);
     }
@@ -9753,7 +9457,6 @@ bool cpp_parser_template_parameter(const token_t * tokens, int & token_i, node_t
     case AUTO:
     case BOOL:
     case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
     case CONST:
@@ -9764,7 +9467,6 @@ bool cpp_parser_template_parameter(const token_t * tokens, int & token_i, node_t
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -9778,13 +9480,20 @@ bool cpp_parser_template_parameter(const token_t * tokens, int & token_i, node_t
     case TEMPLATE_NAME:
     case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
     case UNION:
     case UNSIGNED:
     case VIRTUAL:
     case VOID:
     case VOLATILE:
     case WCHAR_T:
+        if(cpp_parser_parameter_declaration(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case CLASS:
+    case TYPENAME:
         if(cpp_parser_parameter_declaration(tokens, token_i, node1))
         {
             return true;
@@ -9832,13 +9541,25 @@ bool cpp_parser_type_parameter(const token_t * tokens, int & token_i, node_t & n
             if(cpp_parser_identifier_opt(tokens, token_i, node2))
             {
                 node_t node3;
-                if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                switch(GET_TOKEN_ID(tokens, token_i))
                 {
-                    node_t node4;
-                    if(cpp_parser_type_id(tokens, token_i, node4))
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
                     {
                         return true;
                     }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_type_id(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
                 }
             }
         }
@@ -9863,13 +9584,25 @@ bool cpp_parser_type_parameter(const token_t * tokens, int & token_i, node_t & n
                             if(cpp_parser_identifier_opt(tokens, token_i, node6))
                             {
                                 node_t node7;
-                                if(cpp_parser_shift_token<'='>(tokens, token_i, node7))
+                                switch(GET_TOKEN_ID(tokens, token_i))
                                 {
-                                    node_t node8;
-                                    if(cpp_parser_template_name(tokens, token_i, node8))
+                                default:
+                                    if(cpp_parser_shift_EMPTY(tokens, token_i, node7))
                                     {
                                         return true;
                                     }
+                                    break;
+
+                                case '=':
+                                    if(cpp_parser_shift_token<'='>(tokens, token_i, node7))
+                                    {
+                                        node_t node8;
+                                        if(cpp_parser_template_name(tokens, token_i, node8))
+                                        {
+                                            return true;
+                                        }
+                                    }
+                                    break;
                                 }
                             }
                         }
@@ -9886,13 +9619,25 @@ bool cpp_parser_type_parameter(const token_t * tokens, int & token_i, node_t & n
             if(cpp_parser_identifier_opt(tokens, token_i, node2))
             {
                 node_t node3;
-                if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                switch(GET_TOKEN_ID(tokens, token_i))
                 {
-                    node_t node4;
-                    if(cpp_parser_type_id(tokens, token_i, node4))
+                default:
+                    if(cpp_parser_shift_EMPTY(tokens, token_i, node3))
                     {
                         return true;
                     }
+                    break;
+
+                case '=':
+                    if(cpp_parser_shift_token<'='>(tokens, token_i, node3))
+                    {
+                        node_t node4;
+                        if(cpp_parser_type_id(tokens, token_i, node4))
+                        {
+                            return true;
+                        }
+                    }
+                    break;
                 }
             }
         }
@@ -9944,26 +9689,12 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -9973,49 +9704,31 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     case CONST:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
     case ENUM:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
     case STRUCT:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case TYPENAME:
     case UNION:
@@ -10023,28 +9736,12 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     case VOID:
     case VOLATILE:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_template_argument(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
-        if(cpp_parser_template_argument_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_template_argument(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_template_argument_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -10079,79 +9776,64 @@ bool cpp_parser_template_argument(const token_t * tokens, int & token_i, node_t 
     switch(GET_TOKEN_ID(tokens, token_i))
     {
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
-    case BOOL:
-    case CHAR:
     case CHARACTER:
-    case CLASS_NAME:
-    case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
-    case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
-    case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
-    case INT:
     case INTEGER:
-    case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
-    case SHORT:
-    case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
-    case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
+        if(cpp_parser_assignment_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case BOOL:
+    case CHAR:
+    case CLASS_NAME:
+    case COLONCOLON:
+    case DOUBLE:
+    case FLOAT:
+    case INT:
+    case LONG:
+    case NAMESPACE_NAME:
+    case SHORT:
+    case SIGNED:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
+        if(cpp_parser_assignment_expression(tokens, token_i, node1))
+        {
+            return true;
+        }
+
+        token_i = current_i;
+        if(cpp_parser_type_id(tokens, token_i, node1))
+        {
+            return true;
+        }
+        break;
+
+    case TEMPLATE_NAME:
         if(cpp_parser_assignment_expression(tokens, token_i, node1))
         {
             return true;
@@ -10173,7 +9855,9 @@ bool cpp_parser_template_argument(const token_t * tokens, int & token_i, node_t 
     case CLASS:
     case CONST:
     case ENUM:
+    case ENUM_NAME:
     case STRUCT:
+    case TYPEDEF_NAME:
     case TYPENAME:
     case UNION:
     case VOLATILE:
@@ -10365,7 +10049,6 @@ bool cpp_parser_exception_declaration(const token_t * tokens, int & token_i, nod
     case ENUM:
     case ENUM_NAME:
     case FLOAT:
-    case IDENTIFIER:
     case INT:
     case LONG:
     case NAMESPACE_NAME:
@@ -10386,10 +10069,23 @@ bool cpp_parser_exception_declaration(const token_t * tokens, int & token_i, nod
             int current_i = token_i;
             switch(GET_TOKEN_ID(tokens, token_i))
             {
+            default:
+                if(cpp_parser_shift_EMPTY(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
+            case '[':
+                if(cpp_parser_abstract_declarator(tokens, token_i, node2))
+                {
+                    return true;
+                }
+                break;
+
             case '&':
             case '(':
             case '*':
-            case '[':
             case CLASS_NAME:
             case COLONCOLON:
             case NAMESPACE_NAME:
@@ -10416,9 +10112,6 @@ bool cpp_parser_exception_declaration(const token_t * tokens, int & token_i, nod
                     return true;
                 }
                 break;
-
-            default:
-                REPORT_SWITCH_ERROR(tokens, token_i);
             }
         }
         break;
@@ -10497,7 +10190,6 @@ bool cpp_parser_type_id_list(const token_t * tokens, int & token_i, node_t & nod
     case ENUM:
     case ENUM_NAME:
     case FLOAT:
-    case IDENTIFIER:
     case INT:
     case LONG:
     case NAMESPACE_NAME:
@@ -10518,21 +10210,6 @@ bool cpp_parser_type_id_list(const token_t * tokens, int & token_i, node_t & nod
         }
 
         token_i = current_i;
-        if(cpp_parser_type_id_list(tokens, token_i, node1))
-        {
-            node_t node2;
-            if(cpp_parser_shift_token<','>(tokens, token_i, node2))
-            {
-                node_t node3;
-                if(cpp_parser_type_id(tokens, token_i, node3))
-                {
-                    return true;
-                }
-            }
-        }
-        break;
-
-    case ',':
         if(cpp_parser_type_id_list(tokens, token_i, node1))
         {
             node_t node2;
@@ -10574,54 +10251,22 @@ bool cpp_parser_declaration_seq_opt(const token_t * tokens, int & token_i, node_
     case '&':
     case '(':
     case '*':
-    case ',':
-    case ':':
     case ';':
-    case '[':
-    case '{':
     case '~':
     case ASM:
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
     case EXPORT:
     case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
     case NAMESPACE:
     case NAMESPACE_NAME:
     case OPERATOR:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
     case TEMPLATE:
     case TEMPLATE_NAME:
-    case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
     case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_declaration_seq(tokens, token_i, node1))
         {
             return true;
@@ -10708,27 +10353,12 @@ bool cpp_parser_expression_list_opt(const token_t * tokens, int & token_i, node_
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -10736,52 +10366,33 @@ bool cpp_parser_expression_list_opt(const token_t * tokens, int & token_i, node_
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_expression_list(tokens, token_i, node1))
         {
             return true;
@@ -10928,27 +10539,12 @@ bool cpp_parser_expression_opt(const token_t * tokens, int & token_i, node_t & n
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -10956,52 +10552,33 @@ bool cpp_parser_expression_opt(const token_t * tokens, int & token_i, node_t & n
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_expression(tokens, token_i, node1))
         {
             return true;
@@ -11030,116 +10607,64 @@ bool cpp_parser_statement_seq_opt(const token_t * tokens, int & token_i, node_t 
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case ':':
     case ';':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
     case '{':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case ASM:
-    case AUTO:
     case BOOL:
     case BREAK:
     case CASE:
     case CHAR:
     case CHARACTER:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
     case CONST_CAST:
     case CONTINUE:
     case DEFAULT:
-    case DELETE:
-    case DIVEQ:
     case DO:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM:
     case ENUM_NAME:
-    case EQ:
-    case EXPLICIT:
-    case EXTERN:
     case FALSE:
     case FLOAT:
     case FLOATING:
     case FOR:
-    case FRIEND:
     case GOTO:
-    case GTEQ:
     case IDENTIFIER:
     case IF:
-    case INLINE:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
-    case MUTABLE:
     case NAMESPACE:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
-    case REGISTER:
     case REINTERPRET_CAST:
     case RETURN:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
-    case STATIC:
     case STATIC_CAST:
     case STRING:
-    case STRUCT:
-    case SUBEQ:
     case SWITCH:
-    case TEMPLATE:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
     case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
     case TYPEID:
-    case TYPENAME:
-    case UNION:
     case UNSIGNED:
     case USING:
-    case VIRTUAL:
     case VOID:
-    case VOLATILE:
     case WCHAR_T:
     case WHILE:
-    case XOREQ:
         if(cpp_parser_statement_seq(tokens, token_i, node1))
         {
             return true;
@@ -11168,27 +10693,12 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
-    case ',':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -11198,49 +10708,31 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
     case CONST:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
     case ENUM:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
     case STRUCT:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case TYPENAME:
     case UNION:
@@ -11248,7 +10740,6 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
     case VOID:
     case VOLATILE:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_condition(tokens, token_i, node1))
         {
             return true;
@@ -11290,7 +10781,6 @@ bool cpp_parser_decl_specifier_seq_opt(const token_t * tokens, int & token_i, no
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -11341,8 +10831,6 @@ bool cpp_parser_init_declarator_list_opt(const token_t * tokens, int & token_i, 
     case '&':
     case '(':
     case '*':
-    case ',':
-    case '[':
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
@@ -11407,7 +10895,6 @@ bool cpp_parser_enumerator_list_opt(const token_t * tokens, int & token_i, node_
         }
         break;
 
-    case ',':
     case IDENTIFIER:
         if(cpp_parser_enumerator_list(tokens, token_i, node1))
         {
@@ -11551,23 +11038,12 @@ bool cpp_parser_constant_expression_opt(const token_t * tokens, int & token_i, n
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ANDAND:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -11575,39 +11051,28 @@ bool cpp_parser_constant_expression_opt(const token_t * tokens, int & token_i, n
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SR:
     case STATIC_CAST:
     case STRING:
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -11684,7 +11149,6 @@ bool cpp_parser_type_specifier_seq_opt(const token_t * tokens, int & token_i, no
     case ENUM:
     case ENUM_NAME:
     case FLOAT:
-    case IDENTIFIER:
     case INT:
     case LONG:
     case NAMESPACE_NAME:
@@ -11755,7 +11219,6 @@ bool cpp_parser_parameter_declaration_list_opt(const token_t * tokens, int & tok
         }
         break;
 
-    case ',':
     case AUTO:
     case BOOL:
     case CHAR:
@@ -11770,7 +11233,6 @@ bool cpp_parser_parameter_declaration_list_opt(const token_t * tokens, int & tok
     case EXTERN:
     case FLOAT:
     case FRIEND:
-    case IDENTIFIER:
     case INLINE:
     case INT:
     case LONG:
@@ -11905,55 +11367,23 @@ bool cpp_parser_member_specification_opt(const token_t * tokens, int & token_i, 
     case '&':
     case '(':
     case '*':
-    case ',':
     case ':':
     case ';':
-    case '[':
-    case '{':
     case '~':
-    case AUTO:
-    case BOOL:
-    case CHAR:
-    case CLASS:
     case CLASS_NAME:
     case COLONCOLON:
-    case CONST:
-    case DOUBLE:
-    case ENUM:
     case ENUM_NAME:
-    case EXPLICIT:
     case EXPORT:
-    case EXTERN:
-    case FLOAT:
-    case FRIEND:
     case IDENTIFIER:
-    case INLINE:
-    case INT:
-    case LONG:
-    case MUTABLE:
     case NAMESPACE_NAME:
     case OPERATOR:
     case PRIVATE:
     case PROTECTED:
     case PUBLIC:
-    case REGISTER:
-    case SHORT:
-    case SIGNED:
-    case STATIC:
-    case STRUCT:
     case TEMPLATE:
     case TEMPLATE_NAME:
-    case TRY:
-    case TYPEDEF:
     case TYPEDEF_NAME:
-    case TYPENAME:
-    case UNION:
-    case UNSIGNED:
     case USING:
-    case VIRTUAL:
-    case VOID:
-    case VOLATILE:
-    case WCHAR_T:
         if(cpp_parser_member_specification(tokens, token_i, node1))
         {
             return true;
@@ -12012,9 +11442,7 @@ bool cpp_parser_member_declarator_list_opt(const token_t * tokens, int & token_i
     case '&':
     case '(':
     case '*':
-    case ',':
     case ':':
-    case '[':
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
@@ -12283,26 +11711,12 @@ bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i,
         break;
 
     case '!':
-    case '%':
     case '&':
     case '(':
     case '*':
     case '+':
     case '-':
-    case '.':
-    case '/':
-    case '<':
-    case '=':
-    case '>':
-    case '[':
-    case '^':
-    case '|':
     case '~':
-    case ADDEQ:
-    case ANDAND:
-    case ANDEQ:
-    case ARROW:
-    case ARROWSTAR:
     case BOOL:
     case CHAR:
     case CHARACTER:
@@ -12310,52 +11724,33 @@ bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i,
     case COLONCOLON:
     case CONST_CAST:
     case DELETE:
-    case DIVEQ:
-    case DOTSTAR:
     case DOUBLE:
     case DYNAMIC_CAST:
-    case ENUM_NAME:
-    case EQ:
     case FALSE:
     case FLOAT:
     case FLOATING:
-    case GTEQ:
     case IDENTIFIER:
     case INT:
     case INTEGER:
     case LONG:
-    case LTEQ:
     case MINUSMINUS:
-    case MODEQ:
-    case MULEQ:
     case NAMESPACE_NAME:
-    case NEW:
-    case NOTEQ:
     case OPERATOR:
-    case OREQ:
-    case OROR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
     case SIGNED:
     case SIZEOF:
-    case SL:
-    case SLEQ:
-    case SR:
-    case SREQ:
     case STATIC_CAST:
     case STRING:
-    case SUBEQ:
     case TEMPLATE_NAME:
     case THIS:
     case THROW:
     case TRUE:
-    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
-    case XOREQ:
         if(cpp_parser_assignment_expression(tokens, token_i, node1))
         {
             return true;
@@ -12383,7 +11778,6 @@ bool cpp_parser_type_id_list_opt(const token_t * tokens, int & token_i, node_t &
         }
         break;
 
-    case ',':
     case BOOL:
     case CHAR:
     case CLASS:
@@ -12394,7 +11788,6 @@ bool cpp_parser_type_id_list_opt(const token_t * tokens, int & token_i, node_t &
     case ENUM:
     case ENUM_NAME:
     case FLOAT:
-    case IDENTIFIER:
     case INT:
     case LONG:
     case NAMESPACE_NAME:

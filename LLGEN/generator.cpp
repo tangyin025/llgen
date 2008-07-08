@@ -130,45 +130,47 @@ namespace ll
 
 	static StringSet securityStack;
 
+	static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
+
 	static void insert_selection_set_inside(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
 	{
+		StringSet localSet;
 		if(grammar.tokenSet.count(symbolNode.first)
 			|| is_character_symbol(symbolNode.first)
 			|| T_EMPTY == symbolNode.first)
 		{
-			selectionSet.insert(symbolNode.first);
-			return;
+			localSet.insert(symbolNode.first);
 		}
-
-		assert(grammar.productionMap.count(symbolNode.first));
-
-		StringSet localSet;
-		if(!securityStack.count(symbolNode.first))
+		else
 		{
-			securityStack.insert(symbolNode.first);
-
-			const ProductionNode & productionNode = *grammar.productionMap.find(symbolNode.first);
-			SymbolMap::const_iterator sym_node_iter = productionNode.second.begin();
-			for(; sym_node_iter != productionNode.second.end(); sym_node_iter++)
+			if(securityStack.count(symbolNode.first))
 			{
-				insert_selection_set_inside(localSet, *sym_node_iter, grammar);
-			}
-
-			if(!localSet.count(T_EMPTY))
-			{
-				selectionSet.insert(localSet.begin(), localSet.end());
 				return;
 			}
+			securityStack.insert(symbolNode.first);
 
-			localSet.erase(T_EMPTY);
+			assert(grammar.productionMap.count(symbolNode.first));
+
+			const ProductionNode & productionNode = *grammar.productionMap.find(symbolNode.first);
+			insert_selection_set_inside(localSet, productionNode.second.begin(), productionNode.second.end(), grammar);
 		}
 
-		SymbolMap::const_iterator sym_node_iter = symbolNode.second.begin();
-		for(; sym_node_iter != symbolNode.second.end(); sym_node_iter++)
+		if(localSet.count(T_EMPTY) && !symbolNode.second.empty())
 		{
-			insert_selection_set_inside(localSet, *sym_node_iter, grammar);
+			localSet.erase(T_EMPTY);
+
+			insert_selection_set_inside(localSet, symbolNode.second.begin(), symbolNode.second.end(), grammar);
 		}
 		selectionSet.insert(localSet.begin(), localSet.end());
+	}
+
+	static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
+	{
+		SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
+		for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
+		{
+			insert_selection_set_inside(selectionSet, *sym_node_iter, grammar);
+		}
 	}
 
 	void insert_selection_set(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
@@ -182,11 +184,7 @@ namespace ll
 	{
 		securityStack.clear();
 
-		SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
-		for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
-		{
-			insert_selection_set_inside(selectionSet, *sym_node_iter, grammar);
-		}
+		insert_selection_set_inside(selectionSet, symbolNodeBegin, symbolNodeEnd, grammar);
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -229,37 +227,48 @@ namespace ll
 
 	typedef std::vector<std::string> StringList;
 
-	static bool find_left_recursion(StringList & returnPath, const Grammar & grammar, const std::string & symbol)
+	static bool find_left_recursion(StringList & returnPath, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
+
+	static bool find_left_recursion(StringList & returnPath, const SymbolNode & symbolNode, const Grammar & grammar)
 	{
-		if(grammar.tokenSet.count(symbol)
-			|| is_character_symbol(symbol)
-			|| T_EMPTY == symbol)
+		if(grammar.tokenSet.count(symbolNode.first)
+			|| is_character_symbol(symbolNode.first))
 		{
 			return false;
 		}
 
-		if(returnPath.end() != std::find(returnPath.begin(), returnPath.end(), symbol))
+		if(T_EMPTY == symbolNode.first)
 		{
-			if(symbol == returnPath.front())
+			return find_left_recursion(returnPath, symbolNode.second.begin(), symbolNode.second.end(), grammar);
+		}
+
+		if(returnPath.end() != std::find(returnPath.begin(), returnPath.end(), symbolNode.first))
+		{
+			if(symbolNode.first == returnPath.front())
 			{
-				returnPath.push_back(symbol);
+				returnPath.push_back(symbolNode.first);
 				return true;
 			}
 
-			// NOTE: do not check sub left-recursion
+			// NOTE: do not check sub left-recursion !!!
 			return false;
 		}
 
-		assert(grammar.productionMap.count(symbol));
+		assert(grammar.productionMap.count(symbolNode.first));
 
-		returnPath.push_back(symbol);
+		returnPath.push_back(symbolNode.first);
 
-		const ProductionNode & productionNode = *grammar.productionMap.find(symbol);
-		SymbolMap::const_iterator sym_node_iter = productionNode.second.begin();
-		for(; sym_node_iter != productionNode.second.end(); sym_node_iter++)
+		const ProductionNode & productionNode = *grammar.productionMap.find(symbolNode.first);
+		return find_left_recursion(returnPath, productionNode.second.begin(), productionNode.second.end(), grammar);
+	}
+
+	static bool find_left_recursion(StringList & returnPath, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
+	{
+		SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
+		for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
 		{
-			StringList localPath(returnPath.begin(), returnPath.end());
-			if(find_left_recursion(localPath, grammar, sym_node_iter->first))
+			StringList localPath(returnPath);
+			if(find_left_recursion(localPath, *sym_node_iter, grammar))
 			{
 				returnPath = localPath;
 				return true;
@@ -288,7 +297,8 @@ namespace ll
 		for(; production_iter != grammar.productionMap.end(); production_iter++)
 		{
 			StringList returnPath;
-			if(find_left_recursion(returnPath, grammar, production_iter->first))
+			returnPath.push_back(production_iter->first);
+			if(find_left_recursion(returnPath, production_iter->second.begin(), production_iter->second.end(), grammar))
 			{
 				output_left_recursion_path(ostr, returnPath);
 			}
@@ -380,6 +390,15 @@ namespace ll
 			{
 				psymbolMap->insert(SymbolNode((*ast_node_iter)->getText(), SymbolMap()));
 			}
+			else
+			{
+				// NOTE: fixed no last branch bug !!!
+				if(ast_node_iter + 1 == astNodeEnd
+					|| psymbolMap->find((*ast_node_iter)->getText())->second.empty())
+				{
+					psymbolMap->find((*ast_node_iter)->getText())->second.insert(SymbolNode(T_EMPTY, SymbolMap()));
+				}
+			}
 
 			psymbolMap = &psymbolMap->find((*ast_node_iter)->getText())->second;
 		}
@@ -451,6 +470,7 @@ namespace ll
 				}
 				else
 				{
+					// NOTE: an production with empty symbols is <<empty>> !!!
 					grammar.productionMap.find((*ast_node_iter)->getText())->second.insert(SymbolNode(T_EMPTY, SymbolMap()));
 				}
 			}
@@ -477,19 +497,27 @@ namespace ll
 	{
 		StringSet remainSet(selectionSet);
 
-		SelectionBranchList::iterator branch_iter = selectionBranchList.begin();
-		for(; branch_iter != selectionBranchList.end(); branch_iter++)
+		const size_t selectionBranchListSize = selectionBranchList.size();
+		for(size_t i = 0; i < selectionBranchListSize; i++)
 		{
 			StringSet intersectionSet;
-			std::set_intersection(branch_iter->selectionSet.begin(), branch_iter->selectionSet.end(),
+			std::set_intersection(selectionBranchList[i].selectionSet.begin(), selectionBranchList[i].selectionSet.end(),
 				remainSet.begin(), remainSet.end(), std::inserter(intersectionSet, intersectionSet.begin()));
 
 			if(!intersectionSet.empty())
 			{
-				branch_iter->branches.push_back(&symbolNode);
-			}
+				selectionBranchList.push_back(SelectionBranch());
 
-			remove_from_set(remainSet, intersectionSet.begin(), intersectionSet.end());
+				selectionBranchList.back().selectionSet = intersectionSet;
+
+				selectionBranchList.back().branches = selectionBranchList[i].branches;
+
+				selectionBranchList.back().branches.push_back(&symbolNode);
+
+				remove_from_set(selectionBranchList[i].selectionSet, intersectionSet.begin(), intersectionSet.end());
+
+				remove_from_set(remainSet, intersectionSet.begin(), intersectionSet.end());
+			}
 		}
 
 		if(!remainSet.empty())
@@ -499,6 +527,20 @@ namespace ll
 			selectionBranchList.back().selectionSet = remainSet;
 
 			selectionBranchList.back().branches.push_back(&symbolNode);
+		}
+
+		// NOTE: some branch's selection set may be empty !!!
+		SelectionBranchList::iterator branch_iter = selectionBranchList.begin();
+		while(branch_iter != selectionBranchList.end())
+		{
+			if(branch_iter->selectionSet.empty())
+			{
+				branch_iter = selectionBranchList.erase(branch_iter);
+			}
+			else
+			{
+				branch_iter++;
+			}
 		}
 	}
 
