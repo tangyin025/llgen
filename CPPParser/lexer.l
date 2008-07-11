@@ -38,12 +38,22 @@
 
 #include "parser.h"
 
-int lineno;
+int nextcolumnno = 1;
+
+int columnno = nextcolumnno;
+
+int lineno = 1;
+
+#define YY_USER_ACTION \
+	{\
+		columnno = nextcolumnno;\
+		nextcolumnno += yyleng;\
+	}
 
 extern "C" int yywrap(void);
 static void skip_until_eol(void);
 static void skip_comment(void);
-static int check_identifier(const char *);
+static int check_identifier(const char * s);
 %}
 
 intsuffix				([uU][lL]?)|([lL][uU]?)
@@ -55,7 +65,7 @@ stringtext				([^"])|(\\.)
 
 %%
 
-"\n"					{ ++lineno; }
+"\n"					{ ++lineno; columnno = nextcolumnno = 1; }
 [\t\f\v\r ]+				{ /* Ignore whitespace. */ }
 
 "/*"					{ skip_comment(); }
@@ -249,7 +259,7 @@ skip_until_eol(void)
 }
 
 static int
-check_identifier(const char *s)
+check_identifier(const char * s)
 {
 	/*
 	 * This function should check if `s' is a typedef name or a class

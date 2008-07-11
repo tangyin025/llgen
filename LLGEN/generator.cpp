@@ -169,7 +169,12 @@ namespace ll
 		SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
 		for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
 		{
+			// NOTE: must save & retore the security snap
+			StringSet securityStackCurrent = securityStack;
+
 			insert_selection_set_inside(selectionSet, *sym_node_iter, grammar);
+
+			securityStack = securityStackCurrent;
 		}
 	}
 

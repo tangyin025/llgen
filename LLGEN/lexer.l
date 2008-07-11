@@ -48,7 +48,7 @@ void skip_comment_stream(void);
 
 ";"								{ return ';'; }
 
-.								{ std::cerr << "unexpected character: '" << (char)yytext[0] << "'" << std::endl; }
+.								{ std::cerr << "unexpected character (" << lineno << "): '" << (char)yytext[0] << "'" << std::endl; }
 
 %%
 

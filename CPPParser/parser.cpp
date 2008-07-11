@@ -1527,6 +1527,7 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 case IDENTIFIER:
                 case INTEGER:
                 case MINUSMINUS:
+                case NEW:
                 case OPERATOR:
                 case PLUSPLUS:
                 case REINTERPRET_CAST:
@@ -1552,6 +1553,7 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 case CLASS_NAME:
                 case COLONCOLON:
                 case DOUBLE:
+                case ENUM_NAME:
                 case FLOAT:
                 case INT:
                 case LONG:
@@ -1559,6 +1561,7 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 case SHORT:
                 case SIGNED:
                 case TEMPLATE_NAME:
+                case TYPEDEF_NAME:
                 case UNSIGNED:
                 case VOID:
                 case WCHAR_T:
@@ -1585,9 +1588,7 @@ bool cpp_parser_postfix_expression(const token_t * tokens, int & token_i, node_t
                 case CLASS:
                 case CONST:
                 case ENUM:
-                case ENUM_NAME:
                 case STRUCT:
-                case TYPEDEF_NAME:
                 case TYPENAME:
                 case UNION:
                 case VOLATILE:
@@ -2442,6 +2443,7 @@ bool cpp_parser_expression_list(const token_t * tokens, int & token_i, node_t & 
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -2451,6 +2453,7 @@ bool cpp_parser_expression_list(const token_t * tokens, int & token_i, node_t & 
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -2463,6 +2466,7 @@ bool cpp_parser_expression_list(const token_t * tokens, int & token_i, node_t & 
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -2634,6 +2638,7 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case DELETE:
             case DOUBLE:
             case DYNAMIC_CAST:
+            case ENUM_NAME:
             case FALSE:
             case FLOAT:
             case FLOATING:
@@ -2643,6 +2648,7 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case LONG:
             case MINUSMINUS:
             case NAMESPACE_NAME:
+            case NEW:
             case OPERATOR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
@@ -2654,6 +2660,7 @@ bool cpp_parser_unary_expression(const token_t * tokens, int & token_i, node_t &
             case TEMPLATE_NAME:
             case THIS:
             case TRUE:
+            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
@@ -3127,6 +3134,7 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case DELETE:
             case DOUBLE:
             case DYNAMIC_CAST:
+            case ENUM_NAME:
             case FALSE:
             case FLOAT:
             case FLOATING:
@@ -3136,6 +3144,7 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case LONG:
             case MINUSMINUS:
             case NAMESPACE_NAME:
+            case NEW:
             case OPERATOR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
@@ -3147,6 +3156,7 @@ bool cpp_parser_delete_expression(const token_t * tokens, int & token_i, node_t 
             case TEMPLATE_NAME:
             case THIS:
             case TRUE:
+            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
@@ -3217,6 +3227,7 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3226,6 +3237,7 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3237,6 +3249,7 @@ bool cpp_parser_cast_expression(const token_t * tokens, int & token_i, node_t & 
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3282,6 +3295,7 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3291,6 +3305,7 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3302,6 +3317,7 @@ bool cpp_parser_pm_expression(const token_t * tokens, int & token_i, node_t & no
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3381,6 +3397,7 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3390,6 +3407,7 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3401,6 +3419,7 @@ bool cpp_parser_multiplicative_expression(const token_t * tokens, int & token_i,
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3490,6 +3509,7 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3499,6 +3519,7 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3510,6 +3531,7 @@ bool cpp_parser_additive_expression(const token_t * tokens, int & token_i, node_
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3588,6 +3610,7 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3597,6 +3620,7 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3608,6 +3632,7 @@ bool cpp_parser_shift_expression(const token_t * tokens, int & token_i, node_t &
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3688,6 +3713,7 @@ bool cpp_parser_relational_expression(const token_t * tokens, int & token_i, nod
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3697,6 +3723,7 @@ bool cpp_parser_relational_expression(const token_t * tokens, int & token_i, nod
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3708,6 +3735,7 @@ bool cpp_parser_relational_expression(const token_t * tokens, int & token_i, nod
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3808,6 +3836,7 @@ bool cpp_parser_equality_expression(const token_t * tokens, int & token_i, node_
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3817,6 +3846,7 @@ bool cpp_parser_equality_expression(const token_t * tokens, int & token_i, node_
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3828,6 +3858,7 @@ bool cpp_parser_equality_expression(const token_t * tokens, int & token_i, node_
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3905,6 +3936,7 @@ bool cpp_parser_and_expression(const token_t * tokens, int & token_i, node_t & n
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3914,6 +3946,7 @@ bool cpp_parser_and_expression(const token_t * tokens, int & token_i, node_t & n
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -3925,6 +3958,7 @@ bool cpp_parser_and_expression(const token_t * tokens, int & token_i, node_t & n
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -3983,6 +4017,7 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -3992,6 +4027,7 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4003,6 +4039,7 @@ bool cpp_parser_exclusive_or_expression(const token_t * tokens, int & token_i, n
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4061,6 +4098,7 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -4070,6 +4108,7 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4081,6 +4120,7 @@ bool cpp_parser_inclusive_or_expression(const token_t * tokens, int & token_i, n
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4139,6 +4179,7 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -4148,6 +4189,7 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4159,6 +4201,7 @@ bool cpp_parser_logical_and_expression(const token_t * tokens, int & token_i, no
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4217,6 +4260,7 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -4226,6 +4270,7 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4237,6 +4282,7 @@ bool cpp_parser_logical_or_expression(const token_t * tokens, int & token_i, nod
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4340,6 +4386,7 @@ bool cpp_parser_assignment_expression(const token_t * tokens, int & token_i, nod
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -4349,6 +4396,7 @@ bool cpp_parser_assignment_expression(const token_t * tokens, int & token_i, nod
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4360,6 +4408,7 @@ bool cpp_parser_assignment_expression(const token_t * tokens, int & token_i, nod
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4528,6 +4577,7 @@ bool cpp_parser_expression(const token_t * tokens, int & token_i, node_t & node)
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -4537,6 +4587,7 @@ bool cpp_parser_expression(const token_t * tokens, int & token_i, node_t & node)
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -4549,6 +4600,7 @@ bool cpp_parser_expression(const token_t * tokens, int & token_i, node_t & node)
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -4620,9 +4672,7 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
         break;
 
     case ASM:
-    case ENUM_NAME:
     case NAMESPACE:
-    case TYPEDEF_NAME:
     case USING:
         if(cpp_parser_declaration_statement(tokens, token_i, node1))
         {
@@ -4637,9 +4687,11 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
+    case ENUM_NAME:
     case NAMESPACE_NAME:
     case OPERATOR:
     case TEMPLATE_NAME:
+    case TYPEDEF_NAME:
         if(cpp_parser_declaration_statement(tokens, token_i, node1))
         {
             return true;
@@ -4669,6 +4721,7 @@ bool cpp_parser_statement(const token_t * tokens, int & token_i, node_t & node)
     case INTEGER:
     case LONG:
     case MINUSMINUS:
+    case NEW:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
@@ -4897,6 +4950,7 @@ bool cpp_parser_statement_seq(const token_t * tokens, int & token_i, node_t & no
     case CONST_CAST:
     case CONTINUE:
     case DEFAULT:
+    case DELETE:
     case DO:
     case DOUBLE:
     case DYNAMIC_CAST:
@@ -4914,6 +4968,7 @@ bool cpp_parser_statement_seq(const token_t * tokens, int & token_i, node_t & no
     case MINUSMINUS:
     case NAMESPACE:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -5070,6 +5125,7 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     case IDENTIFIER:
     case INTEGER:
     case MINUSMINUS:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -5091,6 +5147,7 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     case CLASS_NAME:
     case COLONCOLON:
     case DOUBLE:
+    case ENUM_NAME:
     case FLOAT:
     case INT:
     case LONG:
@@ -5098,6 +5155,7 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     case SHORT:
     case SIGNED:
     case TEMPLATE_NAME:
+    case TYPEDEF_NAME:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
@@ -5128,9 +5186,7 @@ bool cpp_parser_condition(const token_t * tokens, int & token_i, node_t & node)
     case CLASS:
     case CONST:
     case ENUM:
-    case ENUM_NAME:
     case STRUCT:
-    case TYPEDEF_NAME:
     case TYPENAME:
     case UNION:
     case VOLATILE:
@@ -5294,6 +5350,7 @@ bool cpp_parser_for_init_statement(const token_t * tokens, int & token_i, node_t
     case INTEGER:
     case LONG:
     case MINUSMINUS:
+    case NEW:
     case PLUSPLUS:
     case REINTERPRET_CAST:
     case SHORT:
@@ -5321,24 +5378,18 @@ bool cpp_parser_for_init_statement(const token_t * tokens, int & token_i, node_t
     case '~':
     case CLASS_NAME:
     case COLONCOLON:
+    case ENUM_NAME:
     case IDENTIFIER:
     case NAMESPACE_NAME:
     case OPERATOR:
     case TEMPLATE_NAME:
+    case TYPEDEF_NAME:
         if(cpp_parser_expression_statement(tokens, token_i, node1))
         {
             return true;
         }
 
         token_i = current_i;
-        if(cpp_parser_simple_declaration(tokens, token_i, node1))
-        {
-            return true;
-        }
-        break;
-
-    case ENUM_NAME:
-    case TYPEDEF_NAME:
         if(cpp_parser_simple_declaration(tokens, token_i, node1))
         {
             return true;
@@ -7891,6 +7942,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
             case DELETE:
             case DOUBLE:
             case DYNAMIC_CAST:
+            case ENUM_NAME:
             case FALSE:
             case FLOAT:
             case FLOATING:
@@ -7900,6 +7952,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
             case LONG:
             case MINUSMINUS:
             case NAMESPACE_NAME:
+            case NEW:
             case OPERATOR:
             case PLUSPLUS:
             case REINTERPRET_CAST:
@@ -7912,6 +7965,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
             case THIS:
             case THROW:
             case TRUE:
+            case TYPEDEF_NAME:
             case TYPEID:
             case UNSIGNED:
             case VOID:
@@ -7952,6 +8006,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -7961,6 +8016,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -7973,6 +8029,7 @@ bool cpp_parser_initializer_clause(const token_t * tokens, int & token_i, node_t
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -8018,6 +8075,7 @@ bool cpp_parser_initializer_list(const token_t * tokens, int & token_i, node_t &
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -8027,6 +8085,7 @@ bool cpp_parser_initializer_list(const token_t * tokens, int & token_i, node_t &
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -8039,6 +8098,7 @@ bool cpp_parser_initializer_list(const token_t * tokens, int & token_i, node_t &
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -9707,6 +9767,7 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     case DOUBLE:
     case DYNAMIC_CAST:
     case ENUM:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -9716,6 +9777,7 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -9729,6 +9791,7 @@ bool cpp_parser_template_argument_list(const token_t * tokens, int & token_i, no
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case TYPENAME:
     case UNION:
@@ -9791,6 +9854,7 @@ bool cpp_parser_template_argument(const token_t * tokens, int & token_i, node_t 
     case IDENTIFIER:
     case INTEGER:
     case MINUSMINUS:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -9812,12 +9876,14 @@ bool cpp_parser_template_argument(const token_t * tokens, int & token_i, node_t 
     case CLASS_NAME:
     case COLONCOLON:
     case DOUBLE:
+    case ENUM_NAME:
     case FLOAT:
     case INT:
     case LONG:
     case NAMESPACE_NAME:
     case SHORT:
     case SIGNED:
+    case TYPEDEF_NAME:
     case UNSIGNED:
     case VOID:
     case WCHAR_T:
@@ -9855,9 +9921,7 @@ bool cpp_parser_template_argument(const token_t * tokens, int & token_i, node_t 
     case CLASS:
     case CONST:
     case ENUM:
-    case ENUM_NAME:
     case STRUCT:
-    case TYPEDEF_NAME:
     case TYPENAME:
     case UNION:
     case VOLATILE:
@@ -10368,6 +10432,7 @@ bool cpp_parser_expression_list_opt(const token_t * tokens, int & token_i, node_
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -10377,6 +10442,7 @@ bool cpp_parser_expression_list_opt(const token_t * tokens, int & token_i, node_
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -10389,6 +10455,7 @@ bool cpp_parser_expression_list_opt(const token_t * tokens, int & token_i, node_
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -10554,6 +10621,7 @@ bool cpp_parser_expression_opt(const token_t * tokens, int & token_i, node_t & n
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -10563,6 +10631,7 @@ bool cpp_parser_expression_opt(const token_t * tokens, int & token_i, node_t & n
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -10575,6 +10644,7 @@ bool cpp_parser_expression_opt(const token_t * tokens, int & token_i, node_t & n
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -10626,6 +10696,7 @@ bool cpp_parser_statement_seq_opt(const token_t * tokens, int & token_i, node_t 
     case CONST_CAST:
     case CONTINUE:
     case DEFAULT:
+    case DELETE:
     case DO:
     case DOUBLE:
     case DYNAMIC_CAST:
@@ -10643,6 +10714,7 @@ bool cpp_parser_statement_seq_opt(const token_t * tokens, int & token_i, node_t 
     case MINUSMINUS:
     case NAMESPACE:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -10711,6 +10783,7 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
     case DOUBLE:
     case DYNAMIC_CAST:
     case ENUM:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -10720,6 +10793,7 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -10733,6 +10807,7 @@ bool cpp_parser_condition_opt(const token_t * tokens, int & token_i, node_t & no
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case TYPENAME:
     case UNION:
@@ -11053,6 +11128,7 @@ bool cpp_parser_constant_expression_opt(const token_t * tokens, int & token_i, n
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -11062,6 +11138,7 @@ bool cpp_parser_constant_expression_opt(const token_t * tokens, int & token_i, n
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -11073,6 +11150,7 @@ bool cpp_parser_constant_expression_opt(const token_t * tokens, int & token_i, n
     case TEMPLATE_NAME:
     case THIS:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:
@@ -11726,6 +11804,7 @@ bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i,
     case DELETE:
     case DOUBLE:
     case DYNAMIC_CAST:
+    case ENUM_NAME:
     case FALSE:
     case FLOAT:
     case FLOATING:
@@ -11735,6 +11814,7 @@ bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i,
     case LONG:
     case MINUSMINUS:
     case NAMESPACE_NAME:
+    case NEW:
     case OPERATOR:
     case PLUSPLUS:
     case REINTERPRET_CAST:
@@ -11747,6 +11827,7 @@ bool cpp_parser_assignment_expression_opt(const token_t * tokens, int & token_i,
     case THIS:
     case THROW:
     case TRUE:
+    case TYPEDEF_NAME:
     case TYPEID:
     case UNSIGNED:
     case VOID:

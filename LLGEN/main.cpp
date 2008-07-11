@@ -49,6 +49,7 @@ static std::string build_definite_header(const std::string & fname)
 
 int main(int argc, char ** argv)
 {
+
 #ifdef _MSC_VER
 	_CrtSetDbgFlag(_CRTDBG_LEAK_CHECK_DF | _CRTDBG_ALLOC_MEM_DF);
 #endif
