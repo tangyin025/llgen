@@ -179,18 +179,60 @@ namespace ll
 	};
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// insert_selection_set
-	// //////////////////////////////////////////////////////////////////////////////////
-
-	void insert_selection_set(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar);
-
-	void insert_selection_set(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
-
-	// //////////////////////////////////////////////////////////////////////////////////
 	// insert_first_selection_set
 	// //////////////////////////////////////////////////////////////////////////////////
 
-	void insert_first_selection_set(StringSet & selectionSet, const std::string & symbol, const Grammar & grammar);
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		const std::string & symbolName,
+		const Grammar & grammar);
+
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		const SymbolNode & symbolNode,
+		const Grammar & grammar);
+
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		SymbolMap::const_iterator symbol_node_begin,
+		SymbolMap::const_iterator symbol_node_end,
+		const Grammar & grammar);
+
+	//// //////////////////////////////////////////////////////////////////////////////////
+	//// insert_last_selection_set
+	//// //////////////////////////////////////////////////////////////////////////////////
+
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	const std::string & symbolName,
+	//	const Grammar & grammar);
+
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	const SymbolNode & symbolNode,
+	//	const Grammar & grammar);
+
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	SymbolMap::const_iterator symbol_node_begin,
+	//	SymbolMap::const_iterator symbol_node_end,
+	//	const Grammar & grammar);
+
+	//// //////////////////////////////////////////////////////////////////////////////////
+	//// insert_selection_set
+	//// //////////////////////////////////////////////////////////////////////////////////
+
+	//void insert_selection_set(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar);
+
+	//void insert_selection_set(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
+
+	//void insert_first_selection_set(StringSet & selectionSet, const std::string & symbol, const Grammar & grammar);
 
 	// //////////////////////////////////////////////////////////////////////////////////
 	// output_selection_set

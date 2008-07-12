@@ -151,7 +151,10 @@ int main(int argc, char ** argv)
 			for(; production_iter != llGrammar.productionMap.end(); production_iter++)
 			{
 				ll::StringSet selectionSet;
-				ll::insert_first_selection_set(selectionSet, production_iter->first, llGrammar);
+				//ll::insert_first_selection_set(selectionSet, production_iter->first, llGrammar);
+
+				ll::StringSet securityStack;
+				ll::insert_first_selection_set(selectionSet, securityStack, production_iter->first, llGrammar);
 
 				std::cout << "FIRST(" << production_iter->first << "):" << std::endl;
 				ll::output_selection_set(std::cout, selectionSet, 1);

@@ -118,99 +118,277 @@ namespace ll
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
-	// insert_selection_set
+	// insert_first_selection_set
 	// //////////////////////////////////////////////////////////////////////////////////
 
 	static const boost::regex s_reg_CHAR("'([^']|(\\.))*'", boost::regex::perl | boost::regex::icase);
 
-	static bool is_character_symbol(const std::string & symbol)
+	static bool is_character_symbol(const std::string & symbolName)
 	{
-		return boost::regex_match(symbol, s_reg_CHAR);
+		return boost::regex_match(symbolName, s_reg_CHAR);
 	}
 
-	static StringSet securityStack;
-
-	static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
-
-	static void insert_selection_set_inside(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
+	static bool is_terminal_symbol(const std::string & symbolName, const Grammar & grammar)
 	{
-		StringSet localSet;
-		if(grammar.tokenSet.count(symbolNode.first)
-			|| is_character_symbol(symbolNode.first)
-			|| T_EMPTY == symbolNode.first)
+		return grammar.tokenSet.count(symbolName) || is_character_symbol(symbolName) || T_EMPTY == symbolName;
+	}
+
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		const std::string & symbolName,
+		const Grammar & grammar)
+	{
+		if(is_terminal_symbol(symbolName, grammar))
 		{
-			localSet.insert(symbolNode.first);
+			selectionSet.insert(symbolName);
 		}
 		else
 		{
-			if(securityStack.count(symbolNode.first))
+			assert(grammar.productionMap.count(symbolName));
+
+			if(!securityStack.count(symbolName))
 			{
-				return;
+				securityStack.insert(symbolName);
+
+				const ProductionNode & production = *grammar.productionMap.find(symbolName);
+
+				insert_first_selection_set(selectionSet, securityStack, production.second.begin(), production.second.end(), grammar);
+
+				securityStack.erase(symbolName);
 			}
-			securityStack.insert(symbolNode.first);
-
-			assert(grammar.productionMap.count(symbolNode.first));
-
-			const ProductionNode & productionNode = *grammar.productionMap.find(symbolNode.first);
-			insert_selection_set_inside(localSet, productionNode.second.begin(), productionNode.second.end(), grammar);
+			else
+			{
+				selectionSet.insert(T_EMPTY);
+			}
 		}
+	}
+
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		const SymbolNode & symbolNode,
+		const Grammar & grammar)
+	{
+		StringSet localSet;
+		//if(is_terminal_symbol(symbolNode.first, grammar))
+		//{
+		//	localSet.insert(symbolNode.first);
+		//}
+		//else
+		//{
+		//	assert(grammar.productionMap.count(symbolNode.first));
+
+		//	if(!securityStack.count(symbolNode.first))
+		//	{
+		//		securityStack.insert(symbolNode.first);
+
+		//		const ProductionNode & production = *grammar.productionMap.find(symbolNode.first);
+
+		//		insert_first_selection_set(localSet, securityStack, production.second.begin(), production.second.end(), grammar);
+
+		//		securityStack.erase(symbolNode.first);
+		//	}
+		//	else
+		//	{
+		//		localSet.insert(T_EMPTY);
+		//	}
+		//}
+		insert_first_selection_set(localSet, securityStack, symbolNode.first, grammar);
 
 		if(localSet.count(T_EMPTY) && !symbolNode.second.empty())
 		{
 			localSet.erase(T_EMPTY);
 
-			insert_selection_set_inside(localSet, symbolNode.second.begin(), symbolNode.second.end(), grammar);
+			insert_first_selection_set(localSet, securityStack, symbolNode.second.begin(), symbolNode.second.end(), grammar);
 		}
+
 		selectionSet.insert(localSet.begin(), localSet.end());
 	}
 
-	static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
+	void insert_first_selection_set(
+		StringSet & selectionSet,
+		StringSet & securityStack,
+		SymbolMap::const_iterator symbol_node_begin,
+		SymbolMap::const_iterator symbol_node_end,
+		const Grammar & grammar)
 	{
-		SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
-		for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
+		SymbolMap::const_iterator symbol_node_iter = symbol_node_begin;
+		for(; symbol_node_iter != symbol_node_end; symbol_node_iter++)
 		{
-			// NOTE: must save & retore the security snap
-			StringSet securityStackCurrent = securityStack;
-
-			insert_selection_set_inside(selectionSet, *sym_node_iter, grammar);
-
-			securityStack = securityStackCurrent;
+			insert_first_selection_set(selectionSet, securityStack, *symbol_node_iter, grammar);
 		}
 	}
 
-	void insert_selection_set(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
-	{
-		securityStack.clear();
+	//// //////////////////////////////////////////////////////////////////////////////////
+	//// insert_last_selection_set
+	//// //////////////////////////////////////////////////////////////////////////////////
 
-		insert_selection_set_inside(selectionSet, symbolNode, grammar);
-	}
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	const std::string & symbolName,
+	//	const Grammar & grammar)
+	//{
+	//	if(is_terminal_symbol(symbolName, grammar))
+	//	{
+	//		selectionSet.insert(symbolName);
+	//	}
+	//	else
+	//	{
+	//		assert(grammar.productionMap.count(symbolName));
 
-	void insert_selection_set(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
-	{
-		securityStack.clear();
+	//		if(!securityStack.count(symbolName))
+	//		{
+	//			securityStack.insert(symbolName);
 
-		insert_selection_set_inside(selectionSet, symbolNodeBegin, symbolNodeEnd, grammar);
-	}
+	//			const ProductionNode & production = *grammar.productionMap.find(symbolName);
 
-	// //////////////////////////////////////////////////////////////////////////////////
-	// insert_first_selection_set
-	// //////////////////////////////////////////////////////////////////////////////////
+	//			insert_last_selection_set(selectionSet, securityStack, production.second.begin(), production.second.end(), grammar);
 
-	void insert_first_selection_set(StringSet & selectionSet, const std::string & symbol, const Grammar & grammar)
-	{
-		if(grammar.productionMap.count(symbol))
-		{
-			insert_selection_set(
-				selectionSet,
-				grammar.productionMap.find(symbol)->second.begin(),
-				grammar.productionMap.find(symbol)->second.end(),
-				grammar);
-		}
-		else
-		{
-			selectionSet.insert(symbol);
-		}
-	}
+	//			securityStack.erase(symbolName);
+	//		}
+	//	}
+	//}
+
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	const SymbolNode & symbolNode,
+	//	const Grammar & grammar)
+	//{
+	//	StringSet localSet;
+	//	if(!symbolNode.second.empty())
+	//	{
+	//		insert_last_selection_set(localSet, securityStack, symbolNode.second.begin(), symbolNode.second.end(), grammar);
+	//	}
+
+	//	if(localSet.empty() || localSet.count(T_EMPTY))
+	//	{
+	//		localSet.erase(T_EMPTY);
+
+	//		if(is_terminal_symbol(symbolNode.first, grammar))
+	//		{
+	//			localSet.insert(symbolNode.first);
+	//		}
+	//		else
+	//		{
+	//			assert(grammar.productionMap.count(symbolNode.first));
+
+	//			if(!securityStack.count(symbolNode.first))
+	//			{
+	//				securityStack.insert(symbolNode.first);
+
+	//				const ProductionNode & production = *grammar.productionMap.find(symbolNode.first);
+
+	//				// NOTE: the FIRST selection in LAST symbol node !
+	//				insert_first_selection_set(localSet, securityStack, production.second.begin(), production.second.end(), grammar);
+
+	//				securityStack.erase(symbolNode.first);
+	//			}
+	//		}
+	//	}
+
+	//	selectionSet.insert(localSet.begin(), localSet.end());
+	//}
+
+	//void insert_last_selection_set(
+	//	StringSet & selectionSet,
+	//	StringSet & securityStack,
+	//	SymbolMap::const_iterator symbol_node_begin,
+	//	SymbolMap::const_iterator symbol_node_end,
+	//	const Grammar & grammar)
+	//{
+	//	SymbolMap::const_iterator symbol_node_iter = symbol_node_begin;
+	//	for(; symbol_node_iter != symbol_node_end; symbol_node_iter++)
+	//	{
+	//		insert_last_selection_set(selectionSet, securityStack, *symbol_node_iter, grammar);
+	//	}
+	//}
+
+	//// //////////////////////////////////////////////////////////////////////////////////
+	//// insert_selection_set
+	//// //////////////////////////////////////////////////////////////////////////////////
+
+	//static StringSet securityStack;
+
+	//static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar);
+
+	//static void insert_selection_set_inside(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
+	//{
+	//	StringSet localSet;
+	//	if(grammar.tokenSet.count(symbolNode.first)
+	//		|| is_character_symbol(symbolNode.first)
+	//		|| T_EMPTY == symbolNode.first)
+	//	{
+	//		localSet.insert(symbolNode.first);
+	//	}
+	//	else
+	//	{
+	//		if(securityStack.count(symbolNode.first))
+	//		{
+	//			return;
+	//		}
+	//		securityStack.insert(symbolNode.first);
+
+	//		assert(grammar.productionMap.count(symbolNode.first));
+
+	//		const ProductionNode & productionNode = *grammar.productionMap.find(symbolNode.first);
+	//		insert_selection_set_inside(localSet, productionNode.second.begin(), productionNode.second.end(), grammar);
+	//	}
+
+	//	if(localSet.count(T_EMPTY) && !symbolNode.second.empty())
+	//	{
+	//		localSet.erase(T_EMPTY);
+
+	//		insert_selection_set_inside(localSet, symbolNode.second.begin(), symbolNode.second.end(), grammar);
+	//	}
+	//	selectionSet.insert(localSet.begin(), localSet.end());
+	//}
+
+	//static void insert_selection_set_inside(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
+	//{
+	//	SymbolMap::const_iterator sym_node_iter = symbolNodeBegin;
+	//	for(; sym_node_iter != symbolNodeEnd; sym_node_iter++)
+	//	{
+	//		// NOTE: must save & retore the security snap
+	//		StringSet securityStackCurrent = securityStack;
+
+	//		insert_selection_set_inside(selectionSet, *sym_node_iter, grammar);
+
+	//		securityStack = securityStackCurrent;
+	//	}
+	//}
+
+	//void insert_selection_set(StringSet & selectionSet, const SymbolNode & symbolNode, const Grammar & grammar)
+	//{
+	//	securityStack.clear();
+
+	//	insert_selection_set_inside(selectionSet, symbolNode, grammar);
+	//}
+
+	//void insert_selection_set(StringSet & selectionSet, SymbolMap::const_iterator symbolNodeBegin, SymbolMap::const_iterator symbolNodeEnd, const Grammar & grammar)
+	//{
+	//	securityStack.clear();
+
+	//	insert_selection_set_inside(selectionSet, symbolNodeBegin, symbolNodeEnd, grammar);
+	//}
+
+	//void insert_first_selection_set(StringSet & selectionSet, const std::string & symbol, const Grammar & grammar)
+	//{
+	//	if(grammar.productionMap.count(symbol))
+	//	{
+	//		insert_selection_set(
+	//			selectionSet,
+	//			grammar.productionMap.find(symbol)->second.begin(),
+	//			grammar.productionMap.find(symbol)->second.end(),
+	//			grammar);
+	//	}
+	//	else
+	//	{
+	//		selectionSet.insert(symbol);
+	//	}
+	//}
 
 	// //////////////////////////////////////////////////////////////////////////////////
 	// output_selection_set
@@ -334,14 +512,18 @@ namespace ll
 		const Grammar & grammar)
 	{
 		StringSet fst_selection_set;
-		insert_first_selection_set(fst_selection_set, fst_symbol_node_iter->first, grammar);
+		//insert_first_selection_set(fst_selection_set, fst_symbol_node_iter->first, grammar);
+		StringSet securityStack;
+		insert_first_selection_set(fst_selection_set, securityStack, fst_symbol_node_iter->first, grammar);
 
 		if(fst_selection_set.count(T_EMPTY))
 		{
 			fst_selection_set.erase(T_EMPTY);
 
 			StringSet sec_selection_set;
-			insert_first_selection_set(sec_selection_set, sec_symbol_node_iter->first, grammar);
+			//insert_first_selection_set(sec_selection_set, sec_symbol_node_iter->first, grammar);
+			assert(securityStack.empty());
+			insert_first_selection_set(sec_selection_set, securityStack, sec_symbol_node_iter->first, grammar);
 
 			StringSet intersectionSet;
 			std::set_intersection(
@@ -750,7 +932,8 @@ namespace ll
 		for(; sym_node_iter != sym_node_end; sym_node_iter++)
 		{
 			StringSet selectionSet;
-			insert_selection_set(selectionSet, *sym_node_iter, grammar);
+			StringSet securityStack;
+			insert_first_selection_set(selectionSet, securityStack, *sym_node_iter, grammar);
 			insert_selection_branch(selectionBranchList, selectionSet, *sym_node_iter);
 		}
 
