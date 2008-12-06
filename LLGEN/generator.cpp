@@ -1173,7 +1173,7 @@ namespace ll
 		const int indent /*= 0*/)
 	{
 		output_indent(ostr, indent);
-		ostr << "#endif //" << definite_header << std::endl;
+		ostr << "#endif // " << definite_header << std::endl;
 
 		return;
 		grammar;
