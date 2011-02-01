@@ -219,7 +219,7 @@ stringtext				([^"])|(\\.)
 
 %%
 
-static int
+int
 yywrap(void)
 {
 	return 1;

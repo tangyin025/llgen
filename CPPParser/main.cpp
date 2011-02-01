@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <assert.h>
 #include <sstream>
+#include <stdlib.h>
 #include "parser.h"
 
 #ifdef _MSC_VER

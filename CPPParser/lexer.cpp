@@ -2786,7 +2786,7 @@ void yyfree (void * ptr )
 
 
 
-static int
+int
 yywrap(void)
 {
 	return 1;
