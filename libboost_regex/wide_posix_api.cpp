@@ -22,14 +22,14 @@
 
 #ifndef BOOST_NO_WREGEX
 
-#include <boost/regex.hpp>
 #include <boost/cregex.hpp>
+#include <boost/regex.hpp>
 
 #include <cwchar>
 #include <cstring>
 #include <cstdio>
 
-#if defined(BOOST_NO_STDC_NAMESPACE) || defined(__NetBSD__)
+#if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std{
 #  ifndef BOOST_NO_SWPRINTF
       using ::swprintf;
@@ -65,12 +65,9 @@ const wchar_t* wnames[] = {
       L"REG_EMPTY",
       L"REG_ECOMPLEXITY",
       L"REG_ESTACK",
-      L"REG_E_PERL",
       L"REG_E_UNKNOWN",
 };
 }
-
-typedef boost::basic_regex<wchar_t, c_regex_traits<wchar_t> > c_regex_type;
 
 BOOST_REGEX_DECL int BOOST_REGEX_CCALL regcompW(regex_tW* expression, const wchar_t* ptr, int f)
 {
@@ -80,7 +77,7 @@ BOOST_REGEX_DECL int BOOST_REGEX_CCALL regcompW(regex_tW* expression, const wcha
 #ifndef BOOST_NO_EXCEPTIONS
       try{
 #endif
-      expression->guts = new c_regex_type();
+      expression->guts = new wregex();
 #ifndef BOOST_NO_EXCEPTIONS
       } catch(...)
       {
@@ -130,9 +127,9 @@ BOOST_REGEX_DECL int BOOST_REGEX_CCALL regcompW(regex_tW* expression, const wcha
    try{
 #endif
       expression->re_magic = wmagic_value;
-      static_cast<c_regex_type*>(expression->guts)->set_expression(ptr, p2, flags);
-      expression->re_nsub = static_cast<c_regex_type*>(expression->guts)->mark_count() - 1;
-      result = static_cast<c_regex_type*>(expression->guts)->error_code();
+      static_cast<wregex*>(expression->guts)->set_expression(ptr, p2, flags);
+      expression->re_nsub = static_cast<wregex*>(expression->guts)->mark_count() - 1;
+      result = static_cast<wregex*>(expression->guts)->error_code();
 #ifndef BOOST_NO_EXCEPTIONS
    } 
    catch(const boost::regex_error& be)
@@ -160,7 +157,7 @@ BOOST_REGEX_DECL regsize_t BOOST_REGEX_CCALL regerrorW(int code, const regex_tW*
       {
          result = std::wcslen(wnames[code]) + 1;
          if(buf_size >= result)
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) && !defined(_WIN32_WCE) && !defined(UNDER_CE)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
             ::wcscpy_s(buf, buf_size, wnames[code]);
 #else
             std::wcscpy(buf, wnames[code]);
@@ -179,13 +176,9 @@ BOOST_REGEX_DECL regsize_t BOOST_REGEX_CCALL regerrorW(int code, const regex_tW*
       {
          if(std::wcscmp(e->re_endp, wnames[i]) == 0)
          {
-#if defined(_WIN32_WCE) && !defined(UNDER_CE)
-            (std::swprintf)(localbuf, L"%d", i);
-#else
             (std::swprintf)(localbuf, 5, L"%d", i);
-#endif
             if(std::wcslen(localbuf) < buf_size)
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) && !defined(_WIN32_WCE) && !defined(UNDER_CE)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
                ::wcscpy_s(buf, buf_size, localbuf);
 #else
                std::wcscpy(buf, localbuf);
@@ -193,13 +186,9 @@ BOOST_REGEX_DECL regsize_t BOOST_REGEX_CCALL regerrorW(int code, const regex_tW*
             return std::wcslen(localbuf) + 1;
          }
       }
-#if defined(_WIN32_WCE) && !defined(UNDER_CE)
-      (std::swprintf)(localbuf, L"%d", 0);
-#else
       (std::swprintf)(localbuf, 5, L"%d", 0);
-#endif
       if(std::wcslen(localbuf) < buf_size)
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) && !defined(_WIN32_WCE) && !defined(UNDER_CE)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
          ::wcscpy_s(buf, buf_size, localbuf);
 #else
          std::wcscpy(buf, localbuf);
@@ -211,7 +200,7 @@ BOOST_REGEX_DECL regsize_t BOOST_REGEX_CCALL regerrorW(int code, const regex_tW*
    {
       std::string p;
       if((e) && (e->re_magic == wmagic_value))
-         p = static_cast<c_regex_type*>(e->guts)->get_traits().error_string(static_cast< ::boost::regex_constants::error_type>(code));
+         p = static_cast<wregex*>(e->guts)->get_traits().error_string(static_cast< ::boost::regex_constants::error_type>(code));
       else
       {
          p = re_detail::get_default_error_string(static_cast< ::boost::regex_constants::error_type>(code));
@@ -260,7 +249,7 @@ BOOST_REGEX_DECL int BOOST_REGEX_CCALL regexecW(const regex_tW* expression, cons
 #endif
    if(expression->re_magic == wmagic_value)
    {
-      result = regex_search(start, end, m, *static_cast<c_regex_type*>(expression->guts), flags);
+      result = regex_search(start, end, m, *static_cast<wregex*>(expression->guts), flags);
    }
    else
       return result;
@@ -297,7 +286,7 @@ BOOST_REGEX_DECL void BOOST_REGEX_CCALL regfreeW(regex_tW* expression)
 {
    if(expression->re_magic == wmagic_value)
    {
-      delete static_cast<c_regex_type*>(expression->guts);
+      delete static_cast<wregex*>(expression->guts);
    }
    expression->re_magic = 0;
 }

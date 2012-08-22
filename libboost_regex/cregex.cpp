@@ -19,18 +19,14 @@
 
 #define BOOST_REGEX_SOURCE
 
-#include <boost/regex.hpp>
 #include <boost/cregex.hpp>
+#include <boost/regex.hpp>
 #if !defined(BOOST_NO_STD_STRING)
 #include <map>
 #include <list>
 #include <boost/regex/v4/fileiter.hpp>
 typedef boost::match_flag_type match_flag_type;
 #include <cstdio>
-
-#ifdef BOOST_MSVC
-#pragma warning(disable:4309)
-#endif
 
 namespace boost{
 
@@ -358,7 +354,7 @@ void BuildFileList(std::list<std::string>* pl, const char* files, bool recurse)
 
       while(dstart != dend)
       {
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) && !defined(_WIN32_WCE) && !defined(UNDER_CE)
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400)
          (::sprintf_s)(buf, sizeof(buf), "%s%s%s", dstart.path(), directory_iterator::separator(), ptr);
 #else
          (std::sprintf)(buf, "%s%s%s", dstart.path(), directory_iterator::separator(), ptr);
@@ -563,7 +559,11 @@ std::string RegEx::What(int i)const
    return result;
 }
 
-const std::size_t RegEx::npos = ~static_cast<std::size_t>(0);
+#ifdef BOOST_HAS_LONG_LONG
+const std::size_t RegEx::npos = static_cast<std::size_t>(~0ULL);
+#else
+const std::size_t RegEx::npos = static_cast<std::size_t>(~0UL);
+#endif
 
 } // namespace boost
 
@@ -626,7 +626,6 @@ basic_string<wchar_t>::replace<const wchar_t*>(wchar_t* f1, wchar_t* f2, const w
 #endif
 
 #endif
-
 
 
 
