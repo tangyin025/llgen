@@ -20,6 +20,7 @@
 #include <boost/throw_exception.hpp>
 
 #include <cctype>
+#include <fstream>
 
 #if !defined(__GNUC__) || __GNUC__ < 3
 #include <iostream>
@@ -44,7 +45,10 @@
 // See: http://article.gmane.org/gmane.comp.lib.boost.devel/103843
 // See: http://lists.gnu.org/archive/html/bug-guile/2004-01/msg00013.html
 #if defined(__APPLE__) && defined(__DYNAMIC__)
-#include <crt_externs.h>
+// The proper include for this is crt_externs.h, however it's not
+// available on iOS. The right replacement is not known. See
+// https://svn.boost.org/trac/boost/ticket/5053
+extern "C" { extern char ***_NSGetEnviron(void); }
 #define environ (*_NSGetEnviron()) 
 #else
 #if defined(__MWERKS__)
@@ -67,10 +71,16 @@ namespace boost { namespace program_options {
             woption result;
             result.string_key = opt.string_key;
             result.position_key = opt.position_key;
+            result.unregistered = opt.unregistered;
             
             std::transform(opt.value.begin(), opt.value.end(),
                            back_inserter(result.value),
-                           bind(from_utf8, _1));
+                           boost::bind(from_utf8, _1));
+
+            std::transform(opt.original_tokens.begin(), 
+                           opt.original_tokens.end(),
+                           back_inserter(result.original_tokens),
+                           boost::bind(from_utf8, _1));
             return result;
         }
     }
@@ -78,7 +88,8 @@ namespace boost { namespace program_options {
     basic_parsed_options<wchar_t>
     ::basic_parsed_options(const parsed_options& po)
     : description(po.description),
-      utf8_encoded_options(po)
+      utf8_encoded_options(po),
+      m_options_prefix(po.m_options_prefix)
     {
         for (unsigned i = 0; i < po.options.size(); ++i)
             options.push_back(woption_from_option(po.options[i]));
@@ -88,7 +99,8 @@ namespace boost { namespace program_options {
     template<class charT>
     basic_parsed_options<charT>
     parse_config_file(std::basic_istream<charT>& is, 
-                      const options_description& desc)
+                      const options_description& desc,
+                      bool allow_unregistered)
     {    
         set<string> allowed_options;
 
@@ -99,14 +111,15 @@ namespace boost { namespace program_options {
 
             if (d.long_name().empty())
                 boost::throw_exception(
-                    error("long name required for config file"));
+                    error("abbreviated option names are not permitted in options configuration files"));
 
             allowed_options.insert(d.long_name());
         }
 
         // Parser return char strings
         parsed_options result(&desc);        
-        copy(detail::basic_config_file_iterator<charT>(is, allowed_options), 
+        copy(detail::basic_config_file_iterator<charT>(
+                 is, allowed_options, allow_unregistered), 
              detail::basic_config_file_iterator<charT>(), 
              back_inserter(result.options));
         // Convert char strings into desired type.
@@ -116,14 +129,46 @@ namespace boost { namespace program_options {
     template
     BOOST_PROGRAM_OPTIONS_DECL basic_parsed_options<char>
     parse_config_file(std::basic_istream<char>& is, 
-                      const options_description& desc);
+                      const options_description& desc,
+                      bool allow_unregistered);
 
 #ifndef BOOST_NO_STD_WSTRING
     template
     BOOST_PROGRAM_OPTIONS_DECL basic_parsed_options<wchar_t>
     parse_config_file(std::basic_istream<wchar_t>& is, 
-                      const options_description& desc);
+                      const options_description& desc,
+                      bool allow_unregistered);
 #endif
+
+    template<class charT>
+    basic_parsed_options<charT>
+    parse_config_file(const char* filename, 
+                      const options_description& desc,
+                      bool allow_unregistered)
+    { 
+        // Parser return char strings
+        std::basic_ifstream< charT > strm(filename);
+        if (!strm) 
+        {
+            boost::throw_exception(reading_file(filename));
+        }
+        return parse_config_file(strm, desc, allow_unregistered);
+    }
+
+    template
+    BOOST_PROGRAM_OPTIONS_DECL basic_parsed_options<char>
+    parse_config_file(const char* filename, 
+                      const options_description& desc,
+                      bool allow_unregistered);
+
+#ifndef BOOST_NO_STD_WSTRING
+    template
+    BOOST_PROGRAM_OPTIONS_DECL basic_parsed_options<wchar_t>
+    parse_config_file(const char* filename, 
+                      const options_description& desc,
+                      bool allow_unregistered);
+#endif
+
     
 // This versio, which accepts any options without validation, is disabled,
 // in the hope that nobody will need it and we cant drop it altogether.
@@ -160,7 +205,7 @@ namespace boost { namespace program_options {
         return result;
     }
 
-    namespace {
+    namespace detail {
         class prefix_name_mapper {
         public:
             prefix_name_mapper(const std::string& prefix)
@@ -175,7 +220,7 @@ namespace boost { namespace program_options {
                     {   
                         // Intel-Win-7.1 does not understand
             // push_back on string.         
-                        result += tolower(s[n]);
+                        result += static_cast<char>(tolower(s[n]));
                     }
                 }
                 return result;
@@ -189,7 +234,7 @@ namespace boost { namespace program_options {
     parse_environment(const options_description& desc, 
                       const std::string& prefix)
     {
-        return parse_environment(desc, prefix_name_mapper(prefix));
+        return parse_environment(desc, detail::prefix_name_mapper(prefix));
     }
 
     BOOST_PROGRAM_OPTIONS_DECL parsed_options
