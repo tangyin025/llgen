@@ -8,7 +8,7 @@
 #define BOOST_PROGRAM_OPTIONS_SOURCE
 #include <boost/program_options/config.hpp>
 #include <boost/program_options/options_description.hpp>
-// FIXME: this is only to get multiple_occurences class
+// FIXME: this is only to get multiple_occurrences class
 // should move that to a separate headers.
 #include <boost/program_options/parsers.hpp>
 
@@ -49,21 +49,21 @@ namespace boost { namespace program_options {
     }
     
     option_description::
-    option_description(const char* name,
+    option_description(const char* names,
                        const value_semantic* s)
     : m_value_semantic(s)
     {
-        this->set_name(name);
+        this->set_names(names);
     }
                                            
 
     option_description::
-    option_description(const char* name,
+    option_description(const char* names,
                        const value_semantic* s,
                        const char* description)
     : m_description(description), m_value_semantic(s)
     {
-        this->set_name(name);
+        this->set_names(names);
     }
 
     option_description::~option_description()
@@ -77,38 +77,42 @@ namespace boost { namespace program_options {
                               bool short_ignore_case) const
     {
         match_result result = no_match;        
+        std::string local_option = (long_ignore_case ? tolower_(option) : option);
         
-        std::string local_long_name((long_ignore_case ? tolower_(m_long_name) : m_long_name));
-        
-        if (!local_long_name.empty()) {
-        
-            std::string local_option = (long_ignore_case ? tolower_(option) : option);
+        for(std::vector<std::string>::const_iterator it(m_long_names.begin()); it != m_long_names.end(); it++)
+        {
+            std::string local_long_name((long_ignore_case ? tolower_(*it) : *it));
 
-            if (*local_long_name.rbegin() == '*')
-            {
-                // The name ends with '*'. Any specified name with the given
-                // prefix is OK.
-                if (local_option.find(local_long_name.substr(0, local_long_name.length()-1))
-                    == 0)
-                    result = approximate_match;
-            }
+            if (!local_long_name.empty()) {
 
-            if (local_long_name == local_option)
-            {
-                result = full_match;
-            }
-            else if (approx)
-            {
-                if (local_long_name.find(local_option) == 0)
+
+                if ((result == no_match) && (*local_long_name.rbegin() == '*'))
                 {
-                    result = approximate_match;
+                    // The name ends with '*'. Any specified name with the given
+                    // prefix is OK.
+                    if (local_option.find(local_long_name.substr(0, local_long_name.length()-1))
+                        == 0)
+                        result = approximate_match;
+                }
+
+                if (local_long_name == local_option)
+                {
+                    result = full_match;
+                    break;
+                }
+                else if (approx)
+                {
+                    if (local_long_name.find(local_option) == 0)
+                    {
+                        result = approximate_match;
+                    }
                 }
             }
+
         }
-         
+
         if (result != full_match)
         {
-            std::string local_option(short_ignore_case ? tolower_(option) : option);
             std::string local_short_name(short_ignore_case ? tolower_(m_short_name) : m_short_name);
 
             if (local_short_name == local_option)
@@ -122,9 +126,12 @@ namespace boost { namespace program_options {
 
     const std::string& 
     option_description::key(const std::string& option) const
-    {        
-        if (!m_long_name.empty()) 
-            if (m_long_name.find('*') != string::npos)
+    {
+        // We make the arbitrary choise of using the first long
+        // name as the key, regardless of anything else
+        if (!m_long_names.empty()) {
+            const std::string& first_long_name = *m_long_names.begin();
+            if (first_long_name.find('*') != string::npos)
                 // The '*' character means we're long_name
                 // matches only part of the input. So, returning
                 // long name will remove some of the information,
@@ -132,29 +139,82 @@ namespace boost { namespace program_options {
                 // in the source.
                 return option;
             else
-                return m_long_name;
+                return first_long_name;
+        }
         else
             return m_short_name;
     }
 
+    std::string 
+    option_description::canonical_display_name(int prefix_style) const
+    {
+        // We prefer the first long name over any others
+        if (!m_long_names.empty())
+        {
+            if (prefix_style == command_line_style::allow_long)
+                return "--" + *m_long_names.begin();
+            if (prefix_style == command_line_style::allow_long_disguise)
+                return "-" + *m_long_names.begin();
+        }
+        // sanity check: m_short_name[0] should be '-' or '/'
+        if (m_short_name.length() == 2)
+        {
+            if (prefix_style == command_line_style::allow_slash_for_short)
+                return string("/") + m_short_name[1];
+            if (prefix_style == command_line_style::allow_dash_for_short)
+                return string("-") + m_short_name[1];
+        }
+        if (!m_long_names.empty())
+            return *m_long_names.begin();
+        else
+            return m_short_name;
+    }
+
+
     const std::string&
     option_description::long_name() const
     {
-        return m_long_name;
+        static std::string empty_string("");
+        return m_long_names.empty() ? empty_string : *m_long_names.begin();
+    }
+
+    const std::pair<const std::string*, std::size_t>
+    option_description::long_names() const
+    {
+        // reinterpret_cast is to please msvc 10.
+        return (m_long_names.empty())
+            ? std::pair<const std::string*, size_t>(reinterpret_cast<const std::string*>(0), 0 )
+            : std::pair<const std::string*, size_t>( &(*m_long_names.begin()), m_long_names.size());
     }
 
     option_description&
-    option_description::set_name(const char* _name)
+    option_description::set_names(const char* _names)
     {
-        std::string name(_name);
-        string::size_type n = name.find(',');
-        if (n != string::npos) {
-            assert(n == name.size()-2);
-            m_long_name = name.substr(0, n);
-            m_short_name = '-' + name.substr(n+1,1);
-        } else {
-            m_long_name = name;
+        m_long_names.clear();
+        std::istringstream iss(_names);
+        std::string name;
+
+        while(std::getline(iss, name, ',')) {
+            m_long_names.push_back(name);
         }
+        assert(!m_long_names.empty() && "No option names were specified");
+
+        bool try_interpreting_last_name_as_a_switch = m_long_names.size() > 1;
+        if (try_interpreting_last_name_as_a_switch) {
+            const std::string& last_name = *m_long_names.rbegin();
+            if (last_name.length() == 1) {
+                m_short_name = '-' + last_name;
+                m_long_names.pop_back();
+                // The following caters to the (valid) input of ",c" for some
+                // character c, where the caller only wants this option to have
+                // a short name.
+                if (m_long_names.size() == 1 && (*m_long_names.begin()).empty()) {
+                    m_long_names.clear();
+                }
+            }
+        }
+        // We could theoretically also ensure no remaining long names
+        // are empty, or that none of them have length 1
         return *this;
     }
 
@@ -174,10 +234,13 @@ namespace boost { namespace program_options {
     option_description::format_name() const
     {
         if (!m_short_name.empty())
-            return string(m_short_name).append(" [ --").
-            append(m_long_name).append(" ]");
-        else
-            return string("--").append(m_long_name);
+        {
+            return m_long_names.empty()
+                ? m_short_name 
+                : string(m_short_name).append(" [ --").
+                  append(*m_long_names.begin()).append(" ]");
+        }
+        return string("--").append(*m_long_names.begin());
     }
 
     std::string 
@@ -289,7 +352,7 @@ namespace boost { namespace program_options {
         const option_description* d = find_nothrow(name, approx, 
                                        long_ignore_case, short_ignore_case);
         if (!d)
-            boost::throw_exception(unknown_option(name));
+            boost::throw_exception(unknown_option());
         return *d;
     }
 
@@ -306,6 +369,7 @@ namespace boost { namespace program_options {
                                       bool short_ignore_case) const
     {
         shared_ptr<option_description> found;
+        bool had_full_match = false;
         vector<string> approximate_matches;
         vector<string> full_matches;
         
@@ -323,19 +387,20 @@ namespace boost { namespace program_options {
             if (r == option_description::full_match)
             {                
                 full_matches.push_back(m_options[i]->key(name));
+                found = m_options[i];
+                had_full_match = true;
             } 
             else 
             {                        
                 // FIXME: the use of 'key' here might not
                 // be the best approach.
                 approximate_matches.push_back(m_options[i]->key(name));
+                if (!had_full_match)
+                    found = m_options[i];
             }
-
-            found = m_options[i];
         }
         if (full_matches.size() > 1) 
-            boost::throw_exception(
-                ambiguous_option(name, full_matches));
+            boost::throw_exception(ambiguous_option(full_matches));
         
         // If we have a full match, and an approximate match,
         // ignore approximate match instead of reporting error.
@@ -343,8 +408,7 @@ namespace boost { namespace program_options {
         // "--all" on the command line should select the first one,
         // without ambiguity.
         if (full_matches.empty() && approximate_matches.size() > 1)
-            boost::throw_exception(
-                ambiguous_option(name, approximate_matches));
+            boost::throw_exception(ambiguous_option(approximate_matches));
 
         return found.get();
     }
@@ -393,7 +457,7 @@ namespace boost { namespace program_options {
                 if (count(par.begin(), par.end(), '\t') > 1)
                 {
                     boost::throw_exception(program_options::error(
-                        "Only one tab per paragraph is allowed"));
+                        "Only one tab per paragraph is allowed in the options description"));
                 }
           
                 // erase tab from string
@@ -440,7 +504,7 @@ namespace boost { namespace program_options {
                     // Take care to never increment the iterator past
                     // the end, since MSVC 8.0 (brokenly), assumes that
                     // doing that, even if no access happens, is a bug.
-                    unsigned remaining = distance(line_begin, par_end);
+                    unsigned remaining = static_cast<unsigned>(std::distance(line_begin, par_end));
                     string::const_iterator line_end = line_begin + 
                         ((remaining < line_length) ? remaining : line_length);
             
@@ -460,7 +524,7 @@ namespace boost { namespace program_options {
                         {                 
                             // is last_space within the second half ot the 
                             // current line
-                            if (static_cast<unsigned>(distance(last_space, line_end)) < 
+                            if (static_cast<unsigned>(std::distance(last_space, line_end)) < 
                                 (line_length / 2))
                             {
                                 line_end = last_space;
@@ -473,8 +537,8 @@ namespace boost { namespace program_options {
               
                     if (first_line)
                     {
-                        indent += par_indent;
-                        line_length -= par_indent; // there's less to work with now
+                        indent += static_cast<unsigned>(par_indent);
+                        line_length -= static_cast<unsigned>(par_indent); // there's less to work with now
                         first_line = false;
                     }
 
@@ -563,7 +627,7 @@ namespace boost { namespace program_options {
                       os.put(' ');
                    }
                 } else {
-                   for(unsigned pad = first_column_width - ss.str().size(); pad > 0; --pad)
+                   for(unsigned pad = first_column_width - static_cast<unsigned>(ss.str().size()); pad > 0; --pad)
                    {
                       os.put(' ');
                    }
@@ -575,12 +639,9 @@ namespace boost { namespace program_options {
         }
     }
 
-    void 
-    options_description::print(std::ostream& os) const
+    unsigned                                                                    
+    options_description::get_option_column_width() const                                
     {
-        if (!m_caption.empty())
-            os << m_caption << ":\n";
-
         /* Find the maximum width of the option column */
         unsigned width(23);
         unsigned i; // vc6 has broken for loop scoping
@@ -591,6 +652,11 @@ namespace boost { namespace program_options {
             ss << "  " << opt.format_name() << ' ' << opt.format_parameter();
             width = (max)(width, static_cast<unsigned>(ss.str().size()));            
         }
+
+        /* Get width of groups as well*/
+        for (unsigned j = 0; j < groups.size(); ++j)                            
+            width = max(width, groups[j]->get_option_column_width());
+
         /* this is the column were description should start, if first
            column is longer, we go to a new line */
         const unsigned start_of_description_column = m_line_length - m_min_description_length;
@@ -599,9 +665,20 @@ namespace boost { namespace program_options {
         
         /* add an additional space to improve readability */
         ++width;
-            
+        return width;                                                       
+    }
+
+    void 
+    options_description::print(std::ostream& os, unsigned width) const
+    {
+        if (!m_caption.empty())
+            os << m_caption << ":\n";
+
+        if (!width)
+            width = get_option_column_width();
+
         /* The options formatting style is stolen from Subversion. */
-        for (i = 0; i < m_options.size(); ++i)
+        for (unsigned i = 0; i < m_options.size(); ++i)
         {
             if (belong_to_group[i])
                 continue;
@@ -614,7 +691,8 @@ namespace boost { namespace program_options {
         }
 
         for (unsigned j = 0; j < groups.size(); ++j) {            
-            os << "\n" << *groups[j];
+            os << "\n";
+            groups[j]->print(os, width);
         }
     }
 

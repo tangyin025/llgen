@@ -19,6 +19,7 @@
 
 #define BOOST_REGEX_SOURCE
 
+#include <boost/config.hpp>
 #include <new>
 #include <boost/regex.hpp>
 #include <boost/throw_exception.hpp>
@@ -27,7 +28,9 @@
 #  include <malloc.h>
 #endif
 #ifdef BOOST_REGEX_HAS_MS_STACK_GUARD
-#define WIN32_LEAN_AND_MEAN
+#ifndef WIN32_LEAN_AND_MEAN
+#  define WIN32_LEAN_AND_MEAN
+#endif
 #ifndef NOMINMAX
 #  define NOMINMAX
 #endif
@@ -44,6 +47,9 @@
 #endif
 #endif
 
+#ifdef BOOST_INTEL
+#pragma warning(disable:383)
+#endif
 
 namespace boost{
 
@@ -60,13 +66,13 @@ regex_error::regex_error(const std::string& s, regex_constants::error_type err, 
 }
 
 regex_error::regex_error(regex_constants::error_type err) 
-   : std::runtime_error(::boost::re_detail::get_default_error_string(err))
+   : std::runtime_error(::boost::BOOST_REGEX_DETAIL_NS::get_default_error_string(err))
    , m_error_code(err)
    , m_position(0) 
 {
 }
 
-regex_error::~regex_error() throw() 
+regex_error::~regex_error() BOOST_NOEXCEPT_OR_NOTHROW
 {
 }
 
@@ -79,7 +85,7 @@ void regex_error::raise()const
 
 
 
-namespace re_detail{
+namespace BOOST_REGEX_DETAIL_NS{
 
 BOOST_REGEX_DECL void BOOST_REGEX_CALL raise_runtime_error(const std::runtime_error& ex)
 {
@@ -187,7 +193,9 @@ BOOST_REGEX_DECL void BOOST_REGEX_CALL put_mem_block(void* p)
 
 #else
 
-#ifdef BOOST_HAS_THREADS
+#if defined(BOOST_REGEX_MEM_BLOCK_CACHE_LOCK_FREE)
+mem_block_cache block_cache = { { {nullptr} } } ;
+#elif defined(BOOST_HAS_THREADS)
 mem_block_cache block_cache = { 0, 0, BOOST_STATIC_MUTEX_INIT, };
 #else
 mem_block_cache block_cache = { 0, 0, };
@@ -207,7 +215,7 @@ BOOST_REGEX_DECL void BOOST_REGEX_CALL put_mem_block(void* p)
 
 #endif
 
-} // namespace re_detail
+} // namespace BOOST_REGEX_DETAIL_NS
 
 
 
@@ -220,20 +228,4 @@ int WINAPI DllEntryPoint(HINSTANCE , unsigned long , void*)
    return 1;
 }
 #endif
-
-#if defined(__IBMCPP__) && defined(BOOST_REGEX_DYN_LINK)
-//
-// Is this correct - linker complains without it ?
-//
-int main()
-{ 
-   return 0; 
-}
-
-#endif
-
-
-
-
-
 

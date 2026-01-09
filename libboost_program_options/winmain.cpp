@@ -7,6 +7,8 @@
 #include <boost/program_options/parsers.hpp>
 #include <cctype>
 
+using std::size_t;
+
 #ifdef _WIN32
 namespace boost { namespace program_options {
 
@@ -30,6 +32,7 @@ namespace boost { namespace program_options {
    
             std::string current;
             bool inside_quoted = false;
+            bool empty_quote = false;
             int backslash_count = 0;
             
             for(; i != e; ++i) {
@@ -38,6 +41,7 @@ namespace boost { namespace program_options {
                     // n/2 backslashes and is a quoted block delimiter
                     if (backslash_count % 2 == 0) {
                         current.append(backslash_count / 2, '\\');
+                        empty_quote = inside_quoted && current.empty();
                         inside_quoted = !inside_quoted;
                         // '"' preceded by odd number (n) of backslashes generates
                         // (n-1)/2 backslashes and is literal quote.
@@ -59,6 +63,7 @@ namespace boost { namespace program_options {
                         // Space outside quoted section terminate the current argument
                         result.push_back(current);
                         current.resize(0);
+                        empty_quote = false; 
                         for(;i != e && isspace((unsigned char)*i); ++i)
                             ;
                         --i;
@@ -74,7 +79,7 @@ namespace boost { namespace program_options {
         
             // If we have non-empty 'current' or we're still in quoted
             // section (even if 'current' is empty), add the last token.
-            if (!current.empty() || inside_quoted)
+            if (!current.empty() || inside_quoted || empty_quote)
                 result.push_back(current);        
         }
         return result;
@@ -86,7 +91,7 @@ namespace boost { namespace program_options {
     {
         std::vector<std::wstring> result;
         std::vector<std::string> aux = split_winmain(to_internal(cmdline));
-        for (unsigned i = 0, e = aux.size(); i < e; ++i)
+        for (size_t i = 0, e = aux.size(); i < e; ++i)
             result.push_back(from_utf8(aux[i]));
         return result;        
     }
@@ -94,3 +99,4 @@ namespace boost { namespace program_options {
 
 }}
 #endif
+

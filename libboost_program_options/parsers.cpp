@@ -45,7 +45,10 @@
 // See: http://article.gmane.org/gmane.comp.lib.boost.devel/103843
 // See: http://lists.gnu.org/archive/html/bug-guile/2004-01/msg00013.html
 #if defined(__APPLE__) && defined(__DYNAMIC__)
-#include <crt_externs.h>
+// The proper include for this is crt_externs.h, however it's not
+// available on iOS. The right replacement is not known. See
+// https://svn.boost.org/trac/boost/ticket/5053
+extern "C" { extern char ***_NSGetEnviron(void); }
 #define environ (*_NSGetEnviron()) 
 #else
 #if defined(__MWERKS__)
@@ -85,7 +88,8 @@ namespace boost { namespace program_options {
     basic_parsed_options<wchar_t>
     ::basic_parsed_options(const parsed_options& po)
     : description(po.description),
-      utf8_encoded_options(po)
+      utf8_encoded_options(po),
+      m_options_prefix(po.m_options_prefix)
     {
         for (unsigned i = 0; i < po.options.size(); ++i)
             options.push_back(woption_from_option(po.options[i]));
@@ -107,7 +111,7 @@ namespace boost { namespace program_options {
 
             if (d.long_name().empty())
                 boost::throw_exception(
-                    error("long name required for config file"));
+                    error("abbreviated option names are not permitted in options configuration files"));
 
             allowed_options.insert(d.long_name());
         }
@@ -148,7 +152,16 @@ namespace boost { namespace program_options {
         {
             boost::throw_exception(reading_file(filename));
         }
-        return parse_config_file(strm, desc, allow_unregistered);
+
+        basic_parsed_options<charT> result
+                = parse_config_file(strm, desc, allow_unregistered);
+
+        if (strm.bad())
+        {
+            boost::throw_exception(reading_file(filename));
+        }
+
+        return result;
     }
 
     template
@@ -216,7 +229,7 @@ namespace boost { namespace program_options {
                     {   
                         // Intel-Win-7.1 does not understand
             // push_back on string.         
-                        result += tolower(s[n]);
+                        result += static_cast<char>(tolower(s[n]));
                     }
                 }
                 return result;
